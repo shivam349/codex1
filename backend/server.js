@@ -24,11 +24,28 @@ app.use(express.urlencoded({ extended: true }));
 
 // CORS Configuration
 const corsOptions = {
-  origin: process.env.FRONTEND_URL || 'https://codex1-jfqm.vercel.app',
+  origin: (origin, callback) => {
+    const allowedOrigins = [
+      'https://codex1-jfqm.vercel.app',
+      'http://localhost:3000',
+      'http://localhost:5000'
+    ];
+    
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  },
   credentials: true,
-  optionsSuccessStatus: 200
+  optionsSuccessStatus: 200,
+  methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+  allowedHeaders: ['Content-Type', 'Authorization']
 };
 app.use(cors(corsOptions));
+
+// Handle preflight requests
+app.options('*', cors(corsOptions));
 
 // Request logging (development only)
 if (process.env.NODE_ENV === 'development') {
