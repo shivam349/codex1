@@ -5,9 +5,15 @@ const User = require('../models/User');
 
 async function seedAdmin() {
   try {
-    // Connect to MongoDB
-    await mongoose.connect(process.env.MONGO_URI);
-    console.log('📁 Connected to MongoDB');
+    console.log('🔌 Connecting to MongoDB...');
+    console.log('📍 Database:', process.env.MONGO_URI.substring(0, 50) + '...');
+    
+    // Connect to MongoDB with timeout
+    await mongoose.connect(process.env.MONGO_URI, {
+      serverSelectionTimeoutMS: 10000,
+      socketTimeoutMS: 10000,
+    });
+    console.log('✅ Connected to MongoDB');
 
     // Check if admin already exists
     const adminExists = await User.findOne({ email: 'admin@mithilamakhana.com' });
@@ -17,10 +23,12 @@ async function seedAdmin() {
       console.log('📧 Email:', adminExists.email);
       console.log('🔐 Password: admin123');
       await mongoose.disconnect();
+      process.exit(0);
       return;
     }
 
     // Create admin user
+    console.log('➕ Creating admin user...');
     const admin = await User.create({
       email: 'admin@mithilamakhana.com',
       password: 'admin123',
@@ -33,8 +41,10 @@ async function seedAdmin() {
     console.log('🔑 ID:', admin._id);
 
     await mongoose.disconnect();
+    process.exit(0);
   } catch (error) {
-    console.error('❌ Error seeding admin:', error);
+    console.error('❌ Error seeding admin:', error.message);
+    console.error('💡 Make sure MongoDB URI is correct in backend/.env');
     process.exit(1);
   }
 }
