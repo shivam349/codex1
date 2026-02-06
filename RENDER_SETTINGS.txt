@@ -1,0 +1,33 @@
+# Render Service Settings
+
+Go to Render Dashboard → Your Service → Settings
+
+## ⭐ Root Directory (Best Solution)
+Set this to avoid frontend deps entirely:
+```
+Root Directory: backend
+```
+
+Then use simple commands:
+```
+Build Command: npm install
+Start Command: node server.js
+```
+
+## OR Manual Commands (If Root Directory not set)
+```
+Build Command: cd backend && npm install
+Start Command: cd backend && node server.js
+```
+
+## After Changing Settings
+1. Click "Save Changes"
+2. Trigger manual redeploy
+
+## Access Admin Panel
+Once deployed: `https://your-service.onrender.com/admin`
+
+## Test API
+```bash
+curl https://your-service.onrender.com/api/products
+```
