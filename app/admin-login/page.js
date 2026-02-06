@@ -16,8 +16,13 @@ export default function AdminLogin() {
     e.preventDefault();
     setLoading(true);
     setError('');
+    
+    console.log('🔐 Attempting login with email:', email);
+    console.log('📍 API URL:', process.env.NEXT_PUBLIC_API_URL);
 
     const result = await loginAdmin(email, password);
+    
+    console.log('📊 Login result:', result);
 
     if (result.success) {
       router.push('/admin/dashboard');
