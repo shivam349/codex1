@@ -1,0 +1,20 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+body {
+  @apply bg-[#fffdf7] text-[#2a2318] antialiased;
+}
+
+.gradient-bg {
+  background: radial-gradient(circle at top right, #fff3dd 0%, #fffdf7 35%, #fffdf7 100%);
+}
+
+.glass {
+  background: rgba(255, 255, 255, 0.72);
+  backdrop-filter: blur(8px);
+}
