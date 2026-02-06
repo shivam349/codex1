@@ -42,8 +42,9 @@ if (process.env.NODE_ENV === 'development') {
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Mithila Makhana API',
+    message: 'Mithila Makhana API - Updated',
     version: '1.0.0',
+    timestamp: new Date().toISOString(),
     endpoints: {
       auth: '/api/auth',
       products: '/api/products',
