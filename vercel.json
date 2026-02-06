@@ -1,8 +1,8 @@
 {
   "buildCommand": "next build",
-  "outputDirectory": ".next",
-  "public": "public",
+  "outputDirectory": ".next/standalone",
   "env": {
     "NEXT_PUBLIC_API_URL": "https://codex1-nq28.onrender.com"
   }
 }
+
