@@ -42,10 +42,9 @@ const corsOptions = {
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 };
-app.use(cors(corsOptions));
 
-// Handle preflight requests
-app.options('*', cors(corsOptions));
+// Apply CORS globally - handles preflight requests automatically
+app.use(cors(corsOptions));
 
 // Request logging (development only)
 if (process.env.NODE_ENV === 'development') {
