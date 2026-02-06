@@ -1,81 +1,49 @@
+// Order Model
 const mongoose = require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-  orderNumber: {
+  customerName: {
     type: String,
-    unique: true,
-    required: true
+    required: [true, 'Customer name is required']
   },
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User',
-    required: true
+  phone: {
+    type: String,
+    required: [true, 'Phone number is required']
   },
-  items: [{
-    product: {
+  address: {
+    type: String,
+    required: [true, 'Address is required']
+  },
+  cartItems: [{
+    productId: {
       type: mongoose.Schema.Types.ObjectId,
       ref: 'Product',
       required: true
     },
+    name: String,
+    price: Number,
     quantity: {
       type: Number,
       required: true,
       min: 1
-    },
-    price: {
-      type: Number,
-      required: true
-    },
-    size: String
+    }
   }],
-  totalPrice: {
+  totalAmount: {
     type: Number,
     required: true,
     min: 0
   },
-  shippingPrice: {
-    type: Number,
-    default: 0
-  },
-  taxPrice: {
-    type: Number,
-    default: 0
-  },
   status: {
     type: String,
-    enum: ['pending', 'processing', 'shipped', 'delivered', 'cancelled'],
+    enum: ['pending', 'processing', 'shipped', 'delivered'],
     default: 'pending'
   },
-  paymentStatus: {
-    type: String,
-    enum: ['pending', 'completed', 'failed', 'refunded'],
-    default: 'pending'
-  },
-  shippingAddress: {
-    firstName: String,
-    lastName: String,
-    email: String,
-    phone: String,
-    address: String,
-    city: String,
-    state: String,
-    postalCode: String,
-    country: String
-  },
-  paymentMethod: {
-    type: String,
-    enum: ['credit_card', 'debit_card', 'upi', 'netbanking'],
-    default: 'credit_card'
-  },
-  notes: String,
   createdAt: {
     type: Date,
     default: Date.now
-  },
-  updatedAt: {
-    type: Date,
-    default: Date.now
   }
+}, {
+  timestamps: true
 });
 
 module.exports = mongoose.model('Order', orderSchema);

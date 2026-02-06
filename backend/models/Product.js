@@ -1,4 +1,5 @@
-const mongoose = require("mongoose");
+// Product Model
+const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
   name: {
@@ -6,69 +7,31 @@ const productSchema = new mongoose.Schema({
     required: [true, 'Product name is required'],
     trim: true
   },
-  description: {
-    type: String,
-    required: [true, 'Product description is required']
-  },
   price: {
     type: Number,
-    required: [true, 'Product price is required'],
-    min: 0
-  },
-  compareAtPrice: {
-    type: Number,
+    required: [true, 'Price is required'],
     min: 0
   },
   image: {
     type: String,
     required: [true, 'Product image is required']
   },
-  images: [{
-    type: String
-  }],
+  description: {
+    type: String,
+    required: [true, 'Description is required']
+  },
   category: {
     type: String,
-    required: true,
-    enum: ['premium', 'standard', 'organic', 'flavoured'],
-    default: 'standard'
+    required: [true, 'Category is required'],
+    enum: ['premium', 'standard', 'organic', 'flavoured']
   },
   stock: {
     type: Number,
     required: true,
-    min: 0,
-    default: 0
-  },
-  weight: {
-    type: String,
-    default: '250g'
-  },
-  origin: {
-    type: String,
-    default: 'Mithila, India'
-  },
-  featured: {
-    type: Boolean,
-    default: false
-  },
-  inStock: {
-    type: Boolean,
-    default: true
-  },
-  rating: {
-    type: Number,
-    default: 5,
-    min: 0,
-    max: 5
-  },
-  reviews: {
-    type: Number,
-    default: 0
+    default: 0,
+    min: 0
   },
   createdAt: {
-    type: Date,
-    default: Date.now
-  },
-  updatedAt: {
     type: Date,
     default: Date.now
   }
@@ -76,4 +39,4 @@ const productSchema = new mongoose.Schema({
   timestamps: true
 });
 
-module.exports = mongoose.model("Product", productSchema);
+module.exports = mongoose.model('Product', productSchema);

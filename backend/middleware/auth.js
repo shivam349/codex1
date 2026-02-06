@@ -1,10 +1,12 @@
+// JWT Authentication Middleware
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 
-// Protect routes - verify JWT token
+// Protect routes - Admin only
 const protect = async (req, res, next) => {
   let token;
 
+  // Check for Bearer token in headers
   if (req.headers.authorization && req.headers.authorization.startsWith('Bearer')) {
     try {
       // Get token from header
@@ -13,39 +15,38 @@ const protect = async (req, res, next) => {
       // Verify token
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      // Get user from token
+      // Get user from token (exclude password)
       req.user = await User.findById(decoded.id).select('-password');
+
+      if (!req.user) {
+        return res.status(401).json({ 
+          success: false, 
+          message: 'User not found' 
+        });
+      }
+
+      // Check if user is admin
+      if (!req.user.isAdmin) {
+        return res.status(403).json({ 
+          success: false, 
+          message: 'Access denied. Admin only.' 
+        });
+      }
 
       next();
     } catch (error) {
-      console.error(error);
-      res.status(401).json({ message: 'Not authorized, token failed' });
+      console.error('Auth error:', error);
+      res.status(401).json({ 
+        success: false, 
+        message: 'Not authorized, token invalid' 
+      });
     }
-  }
-
-  if (!token) {
-    res.status(401).json({ message: 'Not authorized, no token' });
-  }
-};
-
-// Admin middleware
-const admin = (req, res, next) => {
-  if (req.user && req.user.isAdmin) {
-    next();
   } else {
-    res.status(403).json({ message: 'Not authorized as admin' });
+    res.status(401).json({ 
+      success: false, 
+      message: 'Not authorized, no token' 
+    });
   }
 };
 
-// Simple admin auth for basic operations (optional, for simple password check)
-const simpleAdminAuth = (req, res, next) => {
-  const adminPassword = req.headers['admin-password'] || req.body.adminPassword;
-  
-  if (adminPassword === process.env.ADMIN_PASSWORD) {
-    next();
-  } else {
-    res.status(403).json({ message: 'Invalid admin password' });
-  }
-};
-
-module.exports = { protect, admin, simpleAdminAuth };
+module.exports = { protect };
