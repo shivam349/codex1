@@ -1,163 +1,213 @@
 // Script to initialize database with sample products
-// Run with: node scripts/seedDb.js
+// Run with: node backend/scripts/seedDb.js
 
-require('dotenv').config({ path: '../.env' });
+require('dotenv').config();
 const mongoose = require('mongoose');
+const bcrypt = require('bcryptjs');
 const Product = require('../models/Product');
+const User = require('../models/User');
+const Order = require('../models/Order');
 
 const sampleProducts = [
   {
-    name: 'Classic Makhana',
-    slug: 'classic-makhana',
-    description: 'Pure roasted makhana with natural salt. Experience the authentic taste of Mithila with our classic collection.',
-    price: 499,
-    originalPrice: 599,
-    category: 'classic',
-    rating: 4.8,
-    reviews: 245,
-    features: [
-      'Lightly roasted to perfection',
-      'Natural Himalayan salt',
-      '100% organic, no pesticides',
-      'High in protein and calcium',
-      'Crunchy and delightful taste',
-      'Vacuum sealed for freshness'
+    name: 'Premium Makhana',
+    description: 'Handpicked premium quality makhana (fox nuts) from the heart of Mithila. Roasted to perfection with traditional methods.',
+    price: 299,
+    compareAtPrice: 399,
+    image: 'https://images.unsplash.com/photo-1599909533843-d4bad336ab7b?w=500',
+    images: [
+      'https://images.unsplash.com/photo-1599909533843-d4bad336ab7b?w=500',
+      'https://images.unsplash.com/photo-1608481337062-4093bf3ed404?w=500'
     ],
-    nutritionFacts: {
-      caloriesPer100g: 347,
-      protein: 14.5,
-      fat: 3.2,
-      carbs: 63.1,
-      fiber: 4.2
-    },
-    sizes: [
-      { size: '250g', price: 299, stock: 100 },
-      { size: '500g', price: 499, stock: 150 },
-      { size: '1kg', price: 899, stock: 200 },
-      { size: '2kg', price: 1699, stock: 100 }
-    ],
-    inStock: true
+    category: 'premium',
+    stock: 50,
+    weight: '250g',
+    origin: 'Mithila, India',
+    featured: true,
+    inStock: true,
+    rating: 5,
+    reviews: 124
+  },
+  {
+    name: 'Organic Makhana',
+    description: '100% organic lotus seeds, naturally grown without pesticides. Perfect healthy snack for your family.',
+    price: 349,
+    compareAtPrice: 449,
+    image: 'https://images.unsplash.com/photo-1599909533843-d4bad336ab7b?w=500',
+    category: 'organic',
+    stock: 30,
+    weight: '250g',
+    origin: 'Mithila, India',
+    featured: true,
+    inStock: true,
+    rating: 5,
+    reviews: 89
+  },
+  {
+    name: 'Roasted Makhana',
+    description: 'Crunchy roasted makhana with a hint of salt. Ready to eat, perfect for snacking anytime.',
+    price: 249,
+    compareAtPrice: 299,
+    image: 'https://images.unsplash.com/photo-1599909533843-d4bad336ab7b?w=500',
+    category: 'standard',
+    stock: 100,
+    weight: '200g',
+    origin: 'Mithila, India',
+    featured: false,
+    inStock: true,
+    rating: 4.5,
+    reviews: 67
   },
   {
     name: 'Masala Makhana',
-    slug: 'masala-makhana',
-    description: 'Traditional spiced roasted makhana with an authentic blend of Indian spices. Perfect for those who love bold flavors.',
-    price: 599,
-    originalPrice: 699,
-    category: 'masala',
-    rating: 4.9,
-    reviews: 312,
-    features: [
-      'Aromatic spice blend',
-      'Traditional recipe',
-      'Low fat content',
-      'No artificial flavors',
-      'Rich in antioxidants',
-      'Perfectly spiced'
-    ],
-    nutritionFacts: {
-      caloriesPer100g: 360,
-      protein: 15.2,
-      fat: 3.8,
-      carbs: 62.5,
-      fiber: 4.1
-    },
-    sizes: [
-      { size: '250g', price: 349, stock: 80 },
-      { size: '500g', price: 599, stock: 120 },
-      { size: '1kg', price: 999, stock: 150 },
-      { size: '2kg', price: 1899, stock: 80 }
-    ],
-    inStock: true
+    description: 'Spicy and flavorful makhana with authentic Indian spices. A perfect tea-time snack.',
+    price: 279,
+    image: 'https://images.unsplash.com/photo-1599909533843-d4bad336ab7b?w=500',
+    category: 'flavoured',
+    stock: 45,
+    weight: '200g',
+    origin: 'Mithila, India',
+    featured: true,
+    inStock: true,
+    rating: 4.8,
+    reviews: 92
   },
   {
-    name: 'Premium Organic',
-    slug: 'premium-organic',
-    description: 'Certified organic makhana harvested fresh from the pristine wetlands of Mithila. Premium quality assurance.',
-    price: 799,
-    originalPrice: 999,
-    category: 'premium',
-    rating: 5.0,
-    reviews: 189,
-    features: [
-      'Certified organic',
-      'Direct from farmers',
-      'Premium selection',
-      'Vacuum sealed',
-      'Farm fresh quality',
-      'Zero pesticides'
-    ],
-    nutritionFacts: {
-      caloriesPer100g: 342,
-      protein: 16.1,
-      fat: 2.9,
-      carbs: 64.2,
-      fiber: 4.5
-    },
-    sizes: [
-      { size: '250g', price: 449, stock: 60 },
-      { size: '500g', price: 799, stock: 100 },
-      { size: '1kg', price: 1299, stock: 120 },
-      { size: '2kg', price: 2199, stock: 60 }
-    ],
-    inStock: true
-  },
-  {
-    name: 'Honey Makhana',
-    slug: 'honey-makhana',
-    description: 'Lightly sweetened with natural honey and roasted to golden perfection. A perfect healthy snack for the whole family.',
-    price: 699,
-    originalPrice: 799,
-    category: 'honey',
+    name: 'Peri Peri Makhana',
+    description: 'Tangy peri peri flavored makhana for those who love a spicy kick.',
+    price: 299,
+    image: 'https://images.unsplash.com/photo-1599909533843-d4bad336ab7b?w=500',
+    category: 'flavoured',
+    stock: 35,
+    weight: '200g',
+    origin: 'Mithila, India',
+    featured: false,
+    inStock: true,
     rating: 4.7,
-    reviews: 156,
-    features: [
-      'Natural honey coating',
-      'Healthy snack',
-      'No preservatives',
-      'Rich in nutrients',
-      'Perfect for kids',
-      'Organic ingredients'
-    ],
-    nutritionFacts: {
-      caloriesPer100g: 375,
-      protein: 13.8,
-      fat: 4.2,
-      carbs: 68.5,
-      fiber: 4.0
-    },
-    sizes: [
-      { size: '250g', price: 399, stock: 90 },
-      { size: '500g', price: 699, stock: 130 },
-      { size: '1kg', price: 1199, stock: 180 },
-      { size: '2kg', price: 2099, stock: 90 }
-    ],
-    inStock: true
+    reviews: 54
+  },
+  {
+    name: 'Cheese & Herbs Makhana',
+    description: 'Gourmet cheese and herb flavored makhana. A fusion of health and taste.',
+    price: 329,
+    image: 'https://images.unsplash.com/photo-1599909533843-d4bad336ab7b?w=500',
+    category: 'flavoured',
+    stock: 25,
+    weight: '200g',
+    origin: 'Mithila, India',
+    featured: false,
+    inStock: true,
+    rating: 4.6,
+    reviews: 38
   }
 ];
 
 async function seedDatabase() {
   try {
     // Connect to MongoDB
-    await mongoose.connect(process.env.MONGODB_URI || 'mongodb://localhost:27017/mithila-makhana');
+    await mongoose.connect(process.env.MONGO_URI);
     console.log('✓ Connected to MongoDB');
 
-    // Clear existing products
+    // Clear existing data
+    console.log('Clearing existing data...');
     await Product.deleteMany({});
-    console.log('✓ Cleared existing products');
+    await User.deleteMany({});
+    await Order.deleteMany({});
+    console.log('✓ Cleared existing data');
 
-    // Insert sample products
-    const inserted = await Product.insertMany(sampleProducts);
-    console.log(`✓ Inserted ${inserted.length} products`);
+    // Insert Products
+    console.log('Inserting products...');
+    const products = await Product.insertMany(sampleProducts);
+    console.log(`✓ Inserted ${products.length} products`);
 
-    // Display inserted products
-    console.log('\n📦 Products in database:');
-    const products = await Product.find();
-    products.forEach(p => {
-      console.log(`  - ${p.name} (₹${p.price}) - Stock: ${p.sizes[1]?.stock || 0}`);
+    // Create Admin User
+    console.log('Creating admin user...');
+    const salt = await bcrypt.genSalt(10);
+    const adminPassword = await bcrypt.hash('admin123', salt);
+    
+    const admin = await User.create({
+      firstName: 'Admin',
+      lastName: 'User',
+      email: 'admin@mithilamakhana.com',
+      phone: '9876543210',
+      password: adminPassword,
+      isAdmin: true,
+      address: {
+        street: '123 Admin Street',
+        city: 'Darbhanga',
+        state: 'Bihar',
+        postalCode: '846004',
+        country: 'India'
+      }
     });
+    console.log('✓ Created admin user');
 
-    console.log('\n✅ Database seeding completed successfully!');
+    // Create Sample Guest User
+    const guestPassword = await bcrypt.hash('guest123', salt);
+    const guest = await User.create({
+      firstName: 'Guest',
+      lastName: 'User',
+      email: 'guest@example.com',
+      phone: '9876543211',
+      password: guestPassword,
+      isAdmin: false
+    });
+    console.log('✓ Created guest user');
+
+    // Create Sample Order
+    console.log('Creating sample order...');
+    const sampleOrder = await Order.create({
+      orderNumber: 'MM-SAMPLE-001',
+      user: guest._id,
+      items: [
+        {
+          product: products[0]._id,
+          quantity: 2,
+          price: products[0].price,
+          size: '250g'
+        },
+        {
+          product: products[3]._id,
+          quantity: 1,
+          price: products[3].price,
+          size: '200g'
+        }
+      ],
+      totalPrice: (products[0].price * 2) + products[3].price,
+      shippingPrice: 50,
+      taxPrice: 30,
+      status: 'pending',
+      paymentStatus: 'pending',
+      shippingAddress: {
+        firstName: 'Guest',
+        lastName: 'User',
+        email: 'guest@example.com',
+        phone: '9876543211',
+        address: '456 Main Street',
+        city: 'Mumbai',
+        state: 'Maharashtra',
+        postalCode: '400001',
+        country: 'India'
+      },
+      paymentMethod: 'credit_card'
+    });
+    console.log('✓ Created sample order');
+
+    console.log('\n✅ Database seeded successfully!');
+    console.log('\n=== Admin Credentials ===');
+    console.log('Email: admin@mithilamakhana.com');
+    console.log('Password: admin123');
+    console.log('\n=== Guest User ===');
+    console.log('Email: guest@example.com');
+    console.log('Password: guest123');
+    console.log('\n=== Sample Data ===');
+    console.log(`Products: ${products.length}`);
+    console.log(`Order: ${sampleOrder.orderNumber}`);
+    console.log('\n=== API Endpoints ===');
+    console.log('Products: http://localhost:5000/api/products');
+    console.log('Orders: http://localhost:5000/api/orders');
+    console.log('Users: http://localhost:5000/api/users');
+    
     process.exit(0);
   } catch (error) {
     console.error('❌ Error seeding database:', error.message);
