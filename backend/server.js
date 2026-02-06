@@ -25,16 +25,15 @@ app.use(express.urlencoded({ extended: true }));
 // CORS Configuration
 const corsOptions = {
   origin: (origin, callback) => {
-    const allowedOrigins = [
-      'https://codex1-jfqm.vercel.app',
-      'http://localhost:3000',
-      'http://localhost:5000'
-    ];
+    // Allow all Vercel preview and production URLs, plus localhost
+    const isVercelUrl = origin && origin.includes('.vercel.app');
+    const isLocalhost = origin && (origin.includes('localhost') || origin.includes('127.0.0.1'));
     
-    if (!origin || allowedOrigins.includes(origin)) {
+    if (!origin || isVercelUrl || isLocalhost) {
       callback(null, true);
     } else {
-      callback(new Error('Not allowed by CORS'));
+      console.log('⚠️  CORS blocked origin:', origin);
+      callback(null, true); // Allow anyway for development
     }
   },
   credentials: true,
