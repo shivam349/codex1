@@ -1,10 +1,9 @@
 'use client';
 
 import { useAuth } from '@/lib/context/AuthContext';
+import { getProducts, addProduct, deleteProduct, getOrders, updateOrderStatus } from '@/lib/api';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function AdminDashboard() {
   const { user, logout } = useAuth();
@@ -29,9 +28,8 @@ export default function AdminDashboard() {
 
   const fetchProducts = async () => {
     try {
-      const response = await fetch(`${API_URL}/api/products`);
-      const data = await response.json();
-      setProducts(data.data || []);
+      const result = await getProducts();
+      setProducts(result || []);
     } catch (error) {
       console.error('Failed to fetch products:', error);
     }
@@ -39,12 +37,8 @@ export default function AdminDashboard() {
 
   const fetchOrders = async () => {
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch(`${API_URL}/api/orders`, {
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-      const data = await response.json();
-      setOrders(data.data || []);
+      const result = await getOrders();
+      setOrders(result || []);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     }
@@ -55,21 +49,11 @@ export default function AdminDashboard() {
     setLoading(true);
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch(`${API_URL}/api/products`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({
-          ...formData,
-          price: parseFloat(formData.price),
-          stock: parseInt(formData.stock),
-        }),
+      const data = await addProduct({
+        ...formData,
+        price: parseFloat(formData.price),
+        stock: parseInt(formData.stock),
       });
-
-      const data = await response.json();
 
       if (data.success) {
         alert('Product added successfully!');
@@ -96,14 +80,6 @@ export default function AdminDashboard() {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch(`${API_URL}/api/products/${productId}`, {
-        method: 'DELETE',
-        headers: { 'Authorization': `Bearer ${token}` },
-      });
-
-      const data = await response.json();
-
       if (data.success) {
         alert('Product deleted!');
         fetchProducts();
@@ -117,17 +93,7 @@ export default function AdminDashboard() {
 
   const handleUpdateOrderStatus = async (orderId, newStatus) => {
     try {
-      const token = localStorage.getItem('adminToken');
-      const response = await fetch(`${API_URL}/api/orders/${orderId}/status`, {
-        method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': `Bearer ${token}`,
-        },
-        body: JSON.stringify({ status: newStatus }),
-      });
-
-      const data = await response.json();
+      const data = await updateOrderStatus(orderId, newStatus);
 
       if (data.success) {
         alert('Order updated!');

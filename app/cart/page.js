@@ -1,10 +1,9 @@
 'use client';
 
 import { useCart } from '@/lib/context/CartContext';
-import { useState, useEffect } from 'react';
+import { placeOrder } from '@/lib/api';
+import { useState } from 'react';
 import Link from 'next/link';
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function CartPage() {
   const { cart, removeFromCart, updateQuantity, clearCart, getTotalPrice } = useCart();
@@ -26,22 +25,16 @@ export default function CartPage() {
     setLoading(true);
 
     try {
-      const response = await fetch(`${API_URL}/api/orders`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({
-          ...formData,
-          cartItems: cart.map((item) => ({
-            productId: item._id,
-            name: item.name,
-            price: item.price,
-            quantity: item.quantity,
-          })),
-          totalAmount: getTotalPrice(),
-        }),
+      const data = await placeOrder({
+        ...formData,
+        cartItems: cart.map((item) => ({
+          productId: item._id,
+          name: item.name,
+          price: item.price,
+          quantity: item.quantity,
+        })),
+        totalAmount: getTotalPrice(),
       });
-
-      const data = await response.json();
 
       if (data.success) {
         alert('✅ Order placed successfully!');

@@ -5,10 +5,9 @@ import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
 import { useCart } from '@/lib/context/CartContext';
+import { getProducts } from '@/lib/api';
 
 gsap.registerPlugin(ScrollTrigger);
-
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function ProductShowcase() {
   const [products, setProducts] = useState([]);
@@ -21,9 +20,8 @@ export default function ProductShowcase() {
   useEffect(() => {
     const fetchProducts = async () => {
       try {
-        const response = await fetch(`${API_URL}/api/products`);
-        const data = await response.json();
-        setProducts(data.data || []);
+        const result = await getProducts();
+        setProducts(result || []);
       } catch (error) {
         console.error('Failed to fetch products:', error);
         // Fallback to hardcoded products
