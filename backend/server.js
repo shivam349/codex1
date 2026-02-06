@@ -68,8 +68,8 @@ app.get('/api/status', (req, res) => {
 app.get('/', (req, res) => {
   res.json({
     success: true,
-    message: 'Mithila Makhana API - Updated',
-    version: '1.0.0',
+    message: 'Mithila Makhana API - v1.0.1 LIVE',
+    version: '1.0.1',
     timestamp: new Date().toISOString(),
     endpoints: {
       auth: '/api/auth',
