@@ -55,6 +55,15 @@ if (process.env.NODE_ENV === 'development') {
   });
 }
 
+// Health check route
+app.get('/api/status', (req, res) => {
+  res.json({
+    status: 'ok',
+    timestamp: new Date().toISOString(),
+    service: 'Mithila Makhana API'
+  });
+});
+
 // Root route
 app.get('/', (req, res) => {
   res.json({

@@ -6,7 +6,7 @@ services:
     env: node
     plan: free
     buildCommand: cd backend && npm install
-    startCommand: cd backend && node server.js
+    startCommand: node backend/server.js
     healthCheckPath: /api/status
     envVars:
       - key: NODE_ENV
@@ -16,10 +16,6 @@ services:
       - key: MONGO_URI
         sync: false
       - key: JWT_SECRET
-        generateValue: true
-      - key: ADMIN_EMAIL
-        sync: false
-      - key: ADMIN_PASSWORD
-        sync: false
+        value: mithila_makhana_jwt_secret_key_2024_change_in_production
       - key: FRONTEND_URL
-        value: https://your-frontend-domain.onrender.com
+        value: https://codex1-jfqm.vercel.app
