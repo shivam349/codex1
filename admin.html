@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Panel - Add Products</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      max-width: 600px;
+      margin: 50px auto;
+      padding: 20px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+    }
+    h2 {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+    form {
+      background: white;
+      padding: 30px;
+      border-radius: 10px;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+    }
+    input, textarea {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 2px solid #ddd;
+      border-radius: 5px;
+      font-size: 14px;
+      box-sizing: border-box;
+    }
+    input:focus, textarea:focus {
+      outline: none;
+      border-color: #667eea;
+    }
+    textarea {
+      height: 100px;
+      resize: vertical;
+    }
+    button {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+      color: white;
+      border: none;
+      border-radius: 5px;
+      font-size: 16px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-top: 10px;
+      transition: transform 0.2s;
+    }
+    button:hover {
+      transform: scale(1.02);
+    }
+    button:active {
+      transform: scale(0.98);
+    }
+    label {
+      color: #333;
+      font-weight: bold;
+      display: block;
+      margin-top: 10px;
+    }
+  </style>
+</head>
+<body>
+  <h2>🛍️ Add Product to Store</h2>
+
+  <form id="form">
+    <label>Product Name</label>
+    <input id="name" placeholder="e.g., Classic Makhana" required>
+    
+    <label>Price (₹)</label>
+    <input id="price" type="number" placeholder="e.g., 499" required>
+    
+    <label>Image URL</label>
+    <input id="image" placeholder="https://example.com/image.jpg" required>
+    
+    <label>Description</label>
+    <textarea id="desc" placeholder="Write a detailed product description..." required></textarea>
+    
+    <button type="submit">➕ Add Product</button>
+  </form>
+
+  <script>
+    document.getElementById("form").onsubmit = async (e) => {
+      e.preventDefault();
+
+      try {
+        const response = await fetch("http://localhost:5000/api/products", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            name: name.value,
+            price: parseFloat(price.value),
+            image: image.value,
+            description: desc.value
+          })
+        });
+
+        if (response.ok) {
+          alert("✅ Product added successfully!");
+          document.getElementById("form").reset();
+        } else {
+          alert("❌ Error adding product");
+        }
+      } catch (error) {
+        alert("❌ Server connection error. Make sure the backend is running on port 5000");
+        console.error(error);
+      }
+    };
+  </script>
+</body>
+</html>
