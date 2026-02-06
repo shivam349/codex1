@@ -1,157 +1,192 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
+import { useCart } from '@/lib/context/CartContext';
 
 gsap.registerPlugin(ScrollTrigger);
 
-const products = [
-  {
-    id: 1,
-    slug: 'classic',
-    name: 'Classic Makhana',
-    price: '₹499',
-    description: 'Pure roasted makhana with natural salt',
-    features: ['100% Natural', 'No Added Sugar', 'Protein Rich'],
-    rating: 4.8,
-  },
-  {
-    id: 2,
-    slug: 'masala',
-    name: 'Masala Makhana',
-    price: '₹599',
-    description: 'Traditional spiced roasted makhana',
-    features: ['Spiced Blend', 'Authentic Recipe', 'Low Fat'],
-    rating: 4.9,
-  },
-  {
-    id: 3,
-    slug: 'premium',
-    name: 'Premium Organic',
-    price: '₹799',
-    description: 'Certified organic makhana harvested fresh',
-    features: ['Organic Certified', 'Vacuum Packed', 'Farm Direct'],
-    rating: 5.0,
-  },
-  {
-    id: 4,
-    slug: 'honey',
-    name: 'Honey Makhana',
-    price: '₹699',
-    description: 'Lightly sweetened with natural honey',
-    features: ['Natural Honey', 'Healthy Snack', 'No Preservatives'],
-    rating: 4.7,
-  },
-];
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000';
 
 export default function ProductShowcase() {
+  const [products, setProducts] = useState([]);
+  const [loading, setLoading] = useState(true);
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
+  const { addToCart } = useCart();
 
+  // Fetch products from API
+  useEffect(() => {
+    const fetchProducts = async () => {
+      try {
+        const response = await fetch(`${API_URL}/api/products`);
+        const data = await response.json();
+        setProducts(data.data || []);
+      } catch (error) {
+        console.error('Failed to fetch products:', error);
+        // Fallback to hardcoded products
+        setProducts([
+          {
+            _id: 1,
+            name: 'Classic Makhana',
+            price: 499,
+            image: 'https://via.placeholder.com/300x300?text=Classic',
+            description: 'Pure roasted makhana with natural salt',
+            category: 'standard',
+            stock: 50,
+          },
+          {
+            _id: 2,
+            name: 'Masala Makhana',
+            price: 599,
+            image: 'https://via.placeholder.com/300x300?text=Masala',
+            description: 'Traditional spiced roasted makhana',
+            category: 'standard',
+            stock: 50,
+          },
+          {
+            _id: 3,
+            name: 'Premium Organic',
+            price: 799,
+            image: 'https://via.placeholder.com/300x300?text=Organic',
+            description: 'Certified organic makhana harvested fresh',
+            category: 'organic',
+            stock: 50,
+          },
+          {
+            _id: 4,
+            name: 'Honey Makhana',
+            price: 699,
+            image: 'https://via.placeholder.com/300x300?text=Honey',
+            description: 'Lightly sweetened with natural honey',
+            category: 'flavoured',
+            stock: 50,
+          },
+        ]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchProducts();
+  }, []);
+
+  // Animations
   useEffect(() => {
     const ctx = gsap.context(() => {
       cardsRef.current.forEach((card, index) => {
-        gsap.from(card, {
-          scrollTrigger: {
-            trigger: card,
-            start: 'top 80%',
-            end: 'top 20%',
-            scrub: 1,
-            markers: false,
-          },
-          opacity: 0,
-          y: 80,
-          rotation: -5 + index * 2,
-          duration: 0.8,
-        });
+        if (card) {
+          gsap.from(card, {
+            scrollTrigger: {
+              trigger: card,
+              start: 'top 80%',
+              end: 'top 20%',
+              scrub: 1,
+              markers: false,
+            },
+            opacity: 0,
+            y: 80,
+            rotation: -5 + index * 2,
+            duration: 0.8,
+          });
+        }
       });
 
-      // Stagger hover effect
       cardsRef.current.forEach((card) => {
-        card.addEventListener('mouseenter', () => {
-          gsap.to(card, {
-            y: -10,
-            duration: 0.3,
+        if (card) {
+          card.addEventListener('mouseenter', () => {
+            gsap.to(card, {
+              y: -10,
+              duration: 0.3,
+            });
           });
-        });
-        card.addEventListener('mouseleave', () => {
-          gsap.to(card, {
-            y: 0,
-            duration: 0.3,
+          card.addEventListener('mouseleave', () => {
+            gsap.to(card, {
+              y: 0,
+              duration: 0.3,
+            });
           });
-        });
+        }
       });
     }, containerRef);
 
     return () => ctx.revert();
-  }, []);
+  }, [products]);
+
+  const handleAddToCart = (product) => {
+    addToCart(product, 1);
+    alert(`✅ ${product.name} added to cart!`);
+  };
 
   return (
-    <section
-      ref={containerRef}
-      id="products"
-      className="py-24 px-6 bg-gradient-to-b from-white to-amber-50"
-    >
+    <section id="products" className="py-20 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-20">
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-amber-900 to-orange-600 bg-clip-text text-transparent mb-4">
-            Our Collections
+        <div className="text-center mb-16">
+          <h2 className="text-4xl md:text-5xl font-bold mb-4">
+            Our <span className="bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+              Premium Collection
+            </span>
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
-            Handpicked selections of makhana harvested fresh from the wetlands of Mithila
+            Discover our handpicked makhana collection, sourced directly from the fertile fields of Mithila
           </p>
         </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-          {products.map((product, index) => (
-            <div
-              key={product.id}
-              ref={(el) => (cardsRef.current[index] = el)}
-              className="bg-white rounded-2xl overflow-hidden shadow-lg hover:shadow-2xl transition-shadow cursor-pointer border border-amber-100 group"
-            >
-              {/* Product Image */}
-              <div className="relative h-64 bg-gradient-to-br from-amber-100 to-orange-100 overflow-hidden">
-                <div className="absolute inset-0 flex items-center justify-center">
-                  <div className="text-6xl">🌾</div>
+        {loading ? (
+          <div className="text-center py-20">
+            <p className="text-lg text-gray-600">Loading products...</p>
+          </div>
+        ) : (
+          <div
+            ref={containerRef}
+            className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6"
+          >
+            {products.map((product, index) => (
+              <div
+                key={product._id}
+                ref={(el) => {
+                  if (el) cardsRef.current[index] = el;
+                }}
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow"
+              >
+                <div className="relative h-48 bg-gray-100 overflow-hidden">
+                  <img
+                    src={product.image}
+                    alt={product.name}
+                    className="w-full h-full object-cover"
+                  />
+                  <div className="absolute top-2 right-2 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                    {product.category}
+                  </div>
                 </div>
-                <div className="absolute top-4 right-4 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-semibold">
-                  ⭐ {product.rating}
-                </div>
-              </div>
 
-              {/* Content */}
-              <div className="p-6 space-y-4">
-                <div>
-                  <h3 className="text-xl font-bold text-gray-900">{product.name}</h3>
-                  <p className="text-gray-600 text-sm mt-1">{product.description}</p>
-                </div>
+                <div className="p-4">
+                  <h3 className="text-lg font-bold mb-2">{product.name}</h3>
+                  <p className="text-gray-600 text-sm mb-3">{product.description}</p>
 
-                <div className="flex flex-wrap gap-2">
-                  {product.features.map((feature) => (
-                    <span
-                      key={feature}
-                      className="text-xs bg-amber-50 text-amber-700 px-3 py-1 rounded-full"
-                    >
-                      {feature}
+                  <div className="flex items-center justify-between mb-4">
+                    <span className="text-2xl font-bold text-amber-600">
+                      ₹{product.price}
                     </span>
-                  ))}
-                </div>
+                    <span className="text-sm text-gray-500">
+                      Stock: {product.stock}
+                    </span>
+                  </div>
 
-                <div className="flex items-center justify-between pt-4 border-t border-gray-200">
-                  <span className="text-2xl font-bold text-amber-600">{product.price}</span>
-                  <Link
-                    href={`/product/${product.slug}`}
-                    className="bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-full font-semibold hover:shadow-lg transition-all transform hover:scale-105 inline-block"
+                  <button
+                    onClick={() => handleAddToCart(product)}
+                    disabled={product.stock <= 0}
+                    className="w-full bg-gradient-to-r from-amber-600 to-orange-500 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
-                    View Details
-                  </Link>
+                    {product.stock > 0 ? '🛒 Add to Cart' : 'Out of Stock'}
+                  </button>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
       </div>
     </section>
   );

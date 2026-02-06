@@ -2,9 +2,16 @@
 
 import Link from 'next/link';
 import { useState, useEffect } from 'react';
+import { useCart } from '@/lib/context/CartContext';
+import { useAuth } from '@/lib/context/AuthContext';
+import { useRouter } from 'next/navigation';
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
+  const { getTotalItems } = useCart();
+  const { isAuthenticated, logout } = useAuth();
+  const router = useRouter();
+  const totalItems = getTotalItems();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -14,6 +21,11 @@ export default function Navigation() {
     window.addEventListener('scroll', handleScroll);
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  const handleLogout = () => {
+    logout();
+    router.push('/');
+  };
 
   return (
     <nav
@@ -49,9 +61,42 @@ export default function Navigation() {
           >
             About
           </Link>
-          <button className="bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all">
-            Cart (0)
-          </button>
+
+          {isAuthenticated() ? (
+            <>
+              <Link
+                href="/admin/dashboard"
+                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+              >
+                🔧 Admin
+              </Link>
+              <button
+                onClick={handleLogout}
+                className="text-gray-700 hover:text-red-600 transition-colors font-medium"
+              >
+                Logout
+              </button>
+            </>
+          ) : (
+            <Link
+              href="/admin-login"
+              className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+            >
+              🔐 Admin Login
+            </Link>
+          )}
+
+          <Link
+            href="/cart"
+            className="bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all relative"
+          >
+            🛒 Cart
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                {totalItems}
+              </span>
+            )}
+          </Link>
         </div>
       </div>
     </nav>
