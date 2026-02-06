@@ -103,8 +103,11 @@ app.use((err, req, res, next) => {
 
 // Start Server
 const PORT = process.env.PORT || 5000;
+const DEPLOYMENT_TIME = new Date().toISOString();
+
 app.listen(PORT, () => {
   console.log(`\n🚀 Server is running on port ${PORT}`);
   console.log(`📍 Environment: ${process.env.NODE_ENV || 'development'}`);
-  console.log(`🌐 CORS allowed from: ${corsOptions.origin}\n`);
+  console.log(`⏰ Deployment Time: ${DEPLOYMENT_TIME}`);
+  console.log(`✅ Auth routes loaded: /api/auth/login`);
 });
