@@ -55,7 +55,20 @@ mongodb+srv://username:PASSWORD@cluster0.xxxxx.mongodb.net/makhana?retryWrites=t
 
 ### Step 4: Deploy on Render
 
-#### Method 1: Using render.yaml (Recommended)
+#### Method 1: Manual Setup (⭐ Recommended - Avoids Webpack Errors)
+
+1. Click "New +" → "Web Service"
+2. Connect your GitHub repository
+3. Configure:
+   - **Name**: `mithila-makhana-api`
+   - **Environment**: `Node`
+   - **Build Command**: `cd backend && npm install`
+   - **Start Command**: `cd backend && node server.js`
+   - **Plan**: `Free`
+
+**Why this method?** It only builds backend dependencies, avoiding webpack/Next.js errors.
+
+#### Method 2: Using render.yaml (Alternative)
 
 1. In Render Dashboard, click "New +"
 2. Select "Blueprint"
@@ -63,16 +76,7 @@ mongodb+srv://username:PASSWORD@cluster0.xxxxx.mongodb.net/makhana?retryWrites=t
 4. Render will detect `render.yaml`
 5. Click "Apply"
 
-#### Method 2: Manual Setup
-
-1. Click "New +" → "Web Service"
-2. Connect your GitHub repository
-3. Configure:
-   - **Name**: `mithila-makhana-api`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install`
-   - **Start Command**: `node backend/server.js`
-   - **Plan**: `Free`
+**Note:** If you encounter webpack errors, use Method 1 instead.
 
 ### Step 5: Set Environment Variables
 
@@ -186,18 +190,38 @@ Before going live:
 
 ## 🐛 Troubleshooting
 
+### Webpack Errors During Build (COMMON ISSUE!)
+
+**Error Messages:**
+- `Module build failed: Error: Cannot find module 'webpack'`
+- `Error: Cannot find module '@next/...`
+- Build fails with frontend-related errors
+
+**Root Cause:** Render is trying to build the entire project including Next.js frontend.
+
+**Solution:** Update your build command to only install backend dependencies:
+
+In Render dashboard → Settings → Build & Deploy:
+```
+Build Command: cd backend && npm install
+Start Command: cd backend && node server.js
+```
+
+Or use Manual Setup (Method 1) as described above.
+
 ### Deployment Failed - Build Error
 
 **Check:**
-1. All dependencies in `package.json`
-2. Build command is correct: `npm install`
-3. Start command is correct: `node backend/server.js`
+1. Build command: `cd backend && npm install` (NOT just `npm install`)
+2. Start command: `cd backend && node server.js`
+3. All backend dependencies in `backend/package.json`
 
 **Solution:**
 ```bash
 # Test locally first
+cd backend
 npm install
-node backend/server.js
+node server.js
 ```
 
 ### MongoDB Connection Error

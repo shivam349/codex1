@@ -1,12 +1,12 @@
-# Render deployment configuration
+# Render deployment configuration for Backend API only
 services:
   # Backend API service
   - type: web
     name: mithila-makhana-api
     env: node
     plan: free
-    buildCommand: npm install
-    startCommand: node backend/server.js
+    buildCommand: cd backend && npm install
+    startCommand: cd backend && node server.js
     healthCheckPath: /api/status
     envVars:
       - key: NODE_ENV
