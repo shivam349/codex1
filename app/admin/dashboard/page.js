@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/lib/context/AuthContext';
-import { getProducts, addProduct, updateProduct, deleteProduct, getOrders, updateOrderStatus } from '@/lib/api';
+import { getProducts, addProduct, updateProduct, deleteProduct, getOrders, updateOrderStatus, uploadProductImage } from '@/lib/api';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -12,6 +12,7 @@ export default function AdminDashboard() {
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
   const [editingProduct, setEditingProduct] = useState(null);
+  const [imageUploading, setImageUploading] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -50,6 +51,12 @@ export default function AdminDashboard() {
     setLoading(true);
 
     try {
+      if (!formData.image) {
+        alert('❌ Please upload an image first.');
+        setLoading(false);
+        return;
+      }
+
       const productData = {
         ...formData,
         price: parseFloat(formData.price),
@@ -106,6 +113,24 @@ export default function AdminDashboard() {
     });
     // Scroll to form
     window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleImageUpload = async (file) => {
+    if (!file) return;
+    setImageUploading(true);
+
+    try {
+      const result = await uploadProductImage(file);
+      if (result.success && result.data?.url) {
+        setFormData((prev) => ({ ...prev, image: result.data.url }));
+      } else {
+        alert('❌ Failed to upload image: ' + (result.message || 'Unknown error'));
+      }
+    } catch (error) {
+      alert('❌ Error uploading image: ' + error.message);
+    }
+
+    setImageUploading(false);
   };
 
   const handleCancelEdit = () => {
@@ -256,15 +281,27 @@ export default function AdminDashboard() {
 
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
-                      Image URL
+                      Product Image
                     </label>
                     <input
-                      type="url"
-                      value={formData.image}
-                      onChange={(e) => setFormData({ ...formData, image: e.target.value })}
+                      type="file"
+                      accept="image/*"
+                      onChange={(e) => handleImageUpload(e.target.files?.[0])}
                       className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
-                      required
+                      disabled={imageUploading}
                     />
+                    {imageUploading && (
+                      <p className="text-xs text-gray-500 mt-1">Uploading image...</p>
+                    )}
+                    {formData.image && (
+                      <div className="mt-2">
+                        <img
+                          src={formData.image}
+                          alt="Uploaded preview"
+                          className="w-24 h-24 object-cover rounded border border-gray-200"
+                        />
+                      </div>
+                    )}
                   </div>
 
                   <div>
