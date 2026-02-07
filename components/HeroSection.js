@@ -110,11 +110,17 @@ export default function HeroSection() {
           </div>
         </div>
 
-        {/* Right 3D scene */}
+        {/* Right 3D scene with background image */}
         <div
           ref={sceneRef}
-          className="h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white"
+          className="h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative"
+          style={{
+            backgroundImage: 'url(/istockphoto-1323205897-1024x1024.jpg)',
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+          }}
         >
+          <div className="absolute inset-0 bg-black/20" />
           <MakhanaScene classNameProp="h-full" />
         </div>
       </div>
