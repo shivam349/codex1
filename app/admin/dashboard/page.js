@@ -1,7 +1,7 @@
 'use client';
 
 import { useAuth } from '@/lib/context/AuthContext';
-import { getProducts, addProduct, deleteProduct, getOrders, updateOrderStatus } from '@/lib/api';
+import { getProducts, addProduct, updateProduct, deleteProduct, getOrders, updateOrderStatus } from '@/lib/api';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 
@@ -11,6 +11,7 @@ export default function AdminDashboard() {
   const [activeTab, setActiveTab] = useState('products');
   const [products, setProducts] = useState([]);
   const [orders, setOrders] = useState([]);
+  const [editingProduct, setEditingProduct] = useState(null);
   const [formData, setFormData] = useState({
     name: '',
     price: '',
@@ -44,19 +45,38 @@ export default function AdminDashboard() {
     }
   };
 
-  const handleAddProduct = async (e) => {
+  const handleSubmitProduct = async (e) => {
     e.preventDefault();
     setLoading(true);
 
     try {
-      const data = await addProduct({
+      const productData = {
         ...formData,
         price: parseFloat(formData.price),
         stock: parseInt(formData.stock),
-      });
+      };
+
+      let data;
+      if (editingProduct) {
+        // Update existing product
+        data = await updateProduct(editingProduct._id, productData);
+        if (data.success) {
+          alert('✅ Product updated successfully!');
+          setEditingProduct(null);
+        } else {
+          alert('❌ Failed to update product: ' + data.message);
+        }
+      } else {
+        // Add new product
+        data = await addProduct(productData);
+        if (data.success) {
+          alert('✅ Product added successfully!');
+        } else {
+          alert('❌ Failed to add product: ' + data.message);
+        }
+      }
 
       if (data.success) {
-        alert('Product added successfully!');
         setFormData({
           name: '',
           price: '',
@@ -66,28 +86,53 @@ export default function AdminDashboard() {
           stock: '',
         });
         fetchProducts();
-      } else {
-        alert('Failed to add product: ' + data.message);
       }
     } catch (error) {
-      alert('Error: ' + error.message);
+      alert('❌ Error: ' + error.message);
     }
 
     setLoading(false);
+  };
+
+  const handleEditProduct = (product) => {
+    setEditingProduct(product);
+    setFormData({
+      name: product.name,
+      price: product.price.toString(),
+      image: product.image,
+      description: product.description,
+      category: product.category,
+      stock: product.stock.toString(),
+    });
+    // Scroll to form
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleCancelEdit = () => {
+    setEditingProduct(null);
+    setFormData({
+      name: '',
+      price: '',
+      image: '',
+      description: '',
+      category: 'premium',
+      stock: '',
+    });
   };
 
   const handleDeleteProduct = async (productId) => {
     if (!confirm('Are you sure you want to delete this product?')) return;
 
     try {
+      const data = await deleteProduct(productId);
       if (data.success) {
-        alert('Product deleted!');
+        alert('✅ Product deleted!');
         fetchProducts();
       } else {
-        alert('Failed to delete: ' + data.message);
+        alert('❌ Failed to delete: ' + data.message);
       }
     } catch (error) {
-      alert('Error: ' + error.message);
+      alert('❌ Error: ' + error.message);
     }
   };
 
@@ -169,8 +214,20 @@ export default function AdminDashboard() {
             {/* Add Product Form */}
             <div className="lg:col-span-1">
               <div className="bg-white rounded-lg shadow-md p-6">
-                <h2 className="text-xl font-bold mb-4">Add New Product</h2>
-                <form onSubmit={handleAddProduct} className="space-y-4">
+                <div className="flex justify-between items-center mb-4">
+                  <h2 className="text-xl font-bold">
+                    {editingProduct ? 'Edit Product' : 'Add New Product'}
+                  </h2>
+                  {editingProduct && (
+                    <button
+                      onClick={handleCancelEdit}
+                      className="text-sm text-gray-600 hover:text-gray-900"
+                    >
+                      ✕ Cancel
+                    </button>
+                  )}
+                </div>
+                <form onSubmit={handleSubmitProduct} className="space-y-4">
                   <div>
                     <label className="block text-sm font-medium text-gray-700 mb-1">
                       Product Name
@@ -257,7 +314,10 @@ export default function AdminDashboard() {
                     disabled={loading}
                     className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 rounded-lg font-medium hover:shadow-lg disabled:opacity-50"
                   >
-                    {loading ? 'Adding...' : 'Add Product'}
+                    {loading 
+                      ? (editingProduct ? 'Updating...' : 'Adding...') 
+                      : (editingProduct ? 'Update Product' : 'Add Product')
+                    }
                   </button>
                 </form>
               </div>
@@ -277,21 +337,32 @@ export default function AdminDashboard() {
                         className="border border-gray-200 rounded-lg p-4 flex gap-4"
                       >
                         <img
-                          src={product.image}
+                          src={product.image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%23e0e9f5" width="80" height="80"/%3E%3C/svg%3E'}
                           alt={product.name}
-                          className="w-20 h-20 object-cover rounded"
+                          className="w-20 h-20 object-cover rounded bg-blue-50"
+                          onError={(e) => {
+                            e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="80" height="80"%3E%3Crect fill="%23e0e9f5" width="80" height="80"/%3E%3C/svg%3E';
+                          }}
                         />
                         <div className="flex-1">
                           <h3 className="font-bold">{product.name}</h3>
                           <p className="text-sm text-gray-600">₹{product.price}</p>
                           <p className="text-sm text-gray-700">Stock: {product.stock}</p>
                         </div>
-                        <button
-                          onClick={() => handleDeleteProduct(product._id)}
-                          className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700"
-                        >
-                          Delete
-                        </button>
+                        <div className="flex flex-col gap-2">
+                          <button
+                            onClick={() => handleEditProduct(product)}
+                            className="bg-blue-600 text-white px-3 py-1 rounded hover:bg-blue-700 text-sm"
+                          >
+                            Edit
+                          </button>
+                          <button
+                            onClick={() => handleDeleteProduct(product._id)}
+                            className="bg-red-600 text-white px-3 py-1 rounded hover:bg-red-700 text-sm"
+                          >
+                            Delete
+                          </button>
+                        </div>
                       </div>
                     ))
                   )}

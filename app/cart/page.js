@@ -83,9 +83,12 @@ export default function CartPage() {
                       className="flex gap-4 border-b pb-4 last:border-b-0"
                     >
                       <img
-                        src={item.image}
+                        src={item.image || 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="96"%3E%3Crect fill="%23e0e9f5" width="96" height="96"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="12" fill="%231e40af" text-anchor="middle" dominant-baseline="middle"%3EImage%3C/text%3E%3C/svg%3E'}
                         alt={item.name}
-                        className="w-24 h-24 object-cover rounded"
+                        className="w-24 h-24 object-cover rounded bg-blue-50"
+                        onError={(e) => {
+                          e.target.src = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="96" height="96"%3E%3Crect fill="%23e0e9f5" width="96" height="96"/%3E%3C/svg%3E';
+                        }}
                       />
                       <div className="flex-1">
                         <h3 className="font-bold text-lg">{item.name}</h3>

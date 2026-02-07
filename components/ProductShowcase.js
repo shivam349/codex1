@@ -10,6 +10,9 @@ import { defaultProducts } from '@/lib/productImages';
 
 gsap.registerPlugin(ScrollTrigger);
 
+// Fallback product image
+const FALLBACK_IMAGE = 'data:image/svg+xml,%3Csvg xmlns="http://www.w3.org/2000/svg" width="400" height="400"%3E%3Crect fill="%23e0e9f5" width="400" height="400"/%3E%3Ctext x="50%" y="50%" font-family="Arial" font-size="24" fill="%231e40af" text-anchor="middle" dominant-baseline="middle" text-transform="uppercase"%3EMakhana Image%3C/text%3E%3C/svg%3E';
+
 export default function ProductShowcase() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -18,16 +21,37 @@ export default function ProductShowcase() {
   const cardsRef = useRef([]);
   const { addToCart } = useCart();
 
+  // Ensure product has all required fields
+  const enrichProduct = (product) => {
+    return {
+      ...product,
+      image: product.image || FALLBACK_IMAGE,
+      imageFallback: product.imageFallback || FALLBACK_IMAGE,
+      _id: product._id || product.id || Math.random(),
+      name: product.name || 'Makhana Product',
+      price: product.price || 0,
+      description: product.description || '',
+      category: product.category || 'standard',
+      stock: product.stock !== undefined ? product.stock : 0,
+    };
+  };
+
   // Fetch products from API
   useEffect(() => {
     const fetchProducts = async () => {
       try {
         const result = await getProducts();
-        setProducts(result || defaultProducts);
+        if (result && result.length > 0) {
+          // Enrich API products with fallback values
+          setProducts(result.map(enrichProduct));
+        } else {
+          // Use default products if API returns empty
+          setProducts(defaultProducts.map(enrichProduct));
+        }
       } catch (error) {
         console.error('Failed to fetch products:', error);
         // Fallback to default products with proper images
-        setProducts(defaultProducts);
+        setProducts(defaultProducts.map(enrichProduct));
       } finally {
         setLoading(false);
       }
@@ -41,6 +65,13 @@ export default function ProductShowcase() {
       ...prev,
       [productId]: true
     }));
+  };
+
+  const getImageSource = (product) => {
+    if (imageErrors[product._id]) {
+      return product.imageFallback || FALLBACK_IMAGE;
+    }
+    return product.image || FALLBACK_IMAGE;
   };
 
   // Animations
@@ -123,7 +154,7 @@ export default function ProductShowcase() {
               >
                 <div className="relative h-48 bg-blue-50 overflow-hidden">
                   <img
-                    src={imageErrors[product._id] ? product.imageFallback || 'https://via.placeholder.com/400x400?text=' + encodeURIComponent(product.name) : product.image}
+                    src={getImageSource(product)}
                     alt={product.name}
                     onError={() => handleImageError(product._id)}
                     className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
