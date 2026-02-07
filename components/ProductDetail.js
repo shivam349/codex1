@@ -85,7 +85,7 @@ export default function ProductDetail({ product = {} }) {
             <div className="flex items-center gap-4 mb-4">
               <div className="flex items-center gap-1">
                 {[...Array(5)].map((_, i) => (
-                  <span key={i} className={i < Math.floor(prod.rating) ? 'text-amber-400' : 'text-gray-300'}>
+                  <span key={i} className={i < Math.floor(prod.rating) ? 'text-blue-400' : 'text-gray-300'}>
                     ⭐
                   </span>
                 ))}
@@ -98,7 +98,7 @@ export default function ProductDetail({ product = {} }) {
           {/* Pricing */}
           <div className="space-y-4">
             <div className="flex items-baseline gap-4">
-              <span className="text-5xl font-bold text-amber-600">₹{prod.price}</span>
+              <span className="text-5xl font-bold text-blue-600">₹{prod.price}</span>
               <span className="text-2xl text-gray-500 line-through">₹{prod.originalPrice}</span>
               <span className="text-lg font-bold text-green-600">
                 Save {Math.round((1 - prod.price / prod.originalPrice) * 100)}%
@@ -113,7 +113,7 @@ export default function ProductDetail({ product = {} }) {
               {prod.availableSizes.map((size) => (
                 <button
                   key={size.size}
-                  className="p-4 border-2 border-amber-200 rounded-xl hover:border-amber-600 hover:bg-amber-50 transition-all text-center"
+                  className="p-4 border-2 border-blue-200 rounded-xl hover:border-blue-600 hover:bg-blue-50 transition-all text-center"
                 >
                   <p className="font-bold text-gray-900">{size.size}</p>
                   <p className="text-sm text-gray-600">₹{size.price}</p>
@@ -127,25 +127,25 @@ export default function ProductDetail({ product = {} }) {
             <div className="flex items-center border-2 border-gray-200 rounded-full">
               <button
                 onClick={() => setQuantity(Math.max(1, quantity - 1))}
-                className="px-4 py-2 text-gray-600 hover:text-amber-600 transition-colors"
+                className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors"
               >
                 −
               </button>
               <span className="px-6 text-xl font-semibold">{quantity}</span>
               <button
                 onClick={() => setQuantity(quantity + 1)}
-                className="px-4 py-2 text-gray-600 hover:text-amber-600 transition-colors"
+                className="px-4 py-2 text-gray-600 hover:text-blue-600 transition-colors"
               >
                 +
               </button>
             </div>
-            <button className="flex-1 px-8 py-3 bg-gradient-to-r from-amber-600 to-orange-500 text-white rounded-full font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105">
+            <button className="flex-1 px-8 py-3 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105">
               Add to Cart
             </button>
           </div>
 
           {/* Trust badges */}
-          <div className="flex gap-6 pt-4 border-t border-amber-200">
+          <div className="flex gap-6 pt-4 border-t border-blue-200">
             <div>
               <p className="text-sm text-gray-600">✓ Free Shipping</p>
               <p className="text-xs text-gray-500">On orders above ₹500</p>
@@ -172,7 +172,7 @@ export default function ProductDetail({ product = {} }) {
               <li
                 key={index}
                 ref={(el) => (featuresRef.current[index] = el)}
-                className="flex items-start gap-4 p-4 rounded-xl bg-amber-50 hover:bg-amber-100 transition-colors"
+                className="flex items-start gap-4 p-4 rounded-xl bg-blue-50 hover:bg-blue-100 transition-colors"
               >
                 <span className="text-2xl flex-shrink-0">✓</span>
                 <span className="text-gray-700">{feature}</span>
@@ -184,28 +184,28 @@ export default function ProductDetail({ product = {} }) {
         {/* Nutrition Facts */}
         <div>
           <h2 className="text-3xl font-bold text-gray-900 mb-8">Nutrition Facts</h2>
-          <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-2xl p-8 space-y-6">
+          <div className="bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 space-y-6">
             <div className="text-center">
               <p className="text-sm text-gray-600 mb-2">Per 100g serving</p>
-              <p className="text-4xl font-bold text-amber-600">{prod.nutritionFacts.caloriesPer100g}</p>
+              <p className="text-4xl font-bold text-blue-600">{prod.nutritionFacts.caloriesPer100g}</p>
               <p className="text-gray-600">Calories</p>
             </div>
             <div className="grid grid-cols-2 gap-4">
               <div className="text-center p-4 bg-white rounded-xl">
                 <p className="text-sm text-gray-600">Protein</p>
-                <p className="text-2xl font-bold text-amber-700">{prod.nutritionFacts.protein}g</p>
+                <p className="text-2xl font-bold text-blue-700">{prod.nutritionFacts.protein}g</p>
               </div>
               <div className="text-center p-4 bg-white rounded-xl">
                 <p className="text-sm text-gray-600">Fat</p>
-                <p className="text-2xl font-bold text-orange-600">{prod.nutritionFacts.fat}g</p>
+                <p className="text-2xl font-bold text-blue-600">{prod.nutritionFacts.fat}g</p>
               </div>
               <div className="text-center p-4 bg-white rounded-xl">
                 <p className="text-sm text-gray-600">Carbs</p>
-                <p className="text-2xl font-bold text-amber-700">{prod.nutritionFacts.carbs}g</p>
+                <p className="text-2xl font-bold text-blue-700">{prod.nutritionFacts.carbs}g</p>
               </div>
               <div className="text-center p-4 bg-white rounded-xl">
                 <p className="text-sm text-gray-600">Fiber</p>
-                <p className="text-2xl font-bold text-orange-600">{prod.nutritionFacts.fiber}g</p>
+                <p className="text-2xl font-bold text-blue-600">{prod.nutritionFacts.fiber}g</p>
               </div>
             </div>
           </div>

@@ -30,7 +30,7 @@ export default function CTASection() {
   return (
     <section
       ref={sectionRef}
-      className="py-24 px-6 bg-gradient-to-r from-amber-600 to-orange-500 relative overflow-hidden"
+      className="py-24 px-6 bg-gradient-to-r from-blue-600 to-blue-700 relative overflow-hidden"
     >
       {/* Decorative elements */}
       <div className="absolute top-0 left-0 w-96 h-96 bg-white/10 rounded-full blur-3xl" />
@@ -48,7 +48,7 @@ export default function CTASection() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-4 justify-center">
-          <button className="px-8 py-4 bg-white text-amber-700 rounded-full font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105">
+          <button className="px-8 py-4 bg-white text-blue-700 rounded-full font-bold text-lg hover:shadow-2xl transition-all transform hover:scale-105">
             Shop Fresh Makhana
           </button>
           <button className="px-8 py-4 border-2 border-white text-white rounded-full font-bold text-lg hover:bg-white/10 transition-all">

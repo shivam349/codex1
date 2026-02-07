@@ -70,7 +70,7 @@ function ParticleRing({ productColor = '#f59e0b' }) {
 
 export default function ProductViewer({ product = 'classic', color = '#f59e0b', classNameProp = '' }) {
   return (
-    <div className={`w-full rounded-3xl overflow-hidden bg-gradient-to-br from-amber-50 to-orange-50 ${classNameProp}`}>
+    <div className={`w-full rounded-3xl overflow-hidden bg-gradient-to-br from-blue-50 to-blue-100 ${classNameProp}`}>
       <Canvas
         camera={{ position: [0, 0, 5], fov: 50 }}
         style={{ width: '100%', height: '100%' }}

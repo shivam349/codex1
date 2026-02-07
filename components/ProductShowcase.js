@@ -6,12 +6,14 @@ import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
 import { useCart } from '@/lib/context/CartContext';
 import { getProducts } from '@/lib/api';
+import { defaultProducts } from '@/lib/productImages';
 
 gsap.registerPlugin(ScrollTrigger);
 
 export default function ProductShowcase() {
   const [products, setProducts] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [imageErrors, setImageErrors] = useState({});
   const containerRef = useRef(null);
   const cardsRef = useRef([]);
   const { addToCart } = useCart();
@@ -21,48 +23,11 @@ export default function ProductShowcase() {
     const fetchProducts = async () => {
       try {
         const result = await getProducts();
-        setProducts(result || []);
+        setProducts(result || defaultProducts);
       } catch (error) {
         console.error('Failed to fetch products:', error);
-        // Fallback to hardcoded products
-        setProducts([
-          {
-            _id: 1,
-            name: 'Classic Makhana',
-            price: 499,
-            image: 'https://via.placeholder.com/300x300?text=Classic',
-            description: 'Pure roasted makhana with natural salt',
-            category: 'standard',
-            stock: 50,
-          },
-          {
-            _id: 2,
-            name: 'Masala Makhana',
-            price: 599,
-            image: 'https://via.placeholder.com/300x300?text=Masala',
-            description: 'Traditional spiced roasted makhana',
-            category: 'standard',
-            stock: 50,
-          },
-          {
-            _id: 3,
-            name: 'Premium Organic',
-            price: 799,
-            image: 'https://via.placeholder.com/300x300?text=Organic',
-            description: 'Certified organic makhana harvested fresh',
-            category: 'organic',
-            stock: 50,
-          },
-          {
-            _id: 4,
-            name: 'Honey Makhana',
-            price: 699,
-            image: 'https://via.placeholder.com/300x300?text=Honey',
-            description: 'Lightly sweetened with natural honey',
-            category: 'flavoured',
-            stock: 50,
-          },
-        ]);
+        // Fallback to default products with proper images
+        setProducts(defaultProducts);
       } finally {
         setLoading(false);
       }
@@ -70,6 +35,13 @@ export default function ProductShowcase() {
 
     fetchProducts();
   }, []);
+
+  const handleImageError = (productId) => {
+    setImageErrors(prev => ({
+      ...prev,
+      [productId]: true
+    }));
+  };
 
   // Animations
   useEffect(() => {
@@ -123,7 +95,7 @@ export default function ProductShowcase() {
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Our <span className="bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+            Our <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               Premium Collection
             </span>
           </h2>
@@ -149,13 +121,15 @@ export default function ProductShowcase() {
                 }}
                 className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow"
               >
-                <div className="relative h-48 bg-gray-100 overflow-hidden">
+                <div className="relative h-48 bg-blue-50 overflow-hidden">
                   <img
-                    src={product.image}
+                    src={imageErrors[product._id] ? product.imageFallback || 'https://via.placeholder.com/400x400?text=' + encodeURIComponent(product.name) : product.image}
                     alt={product.name}
-                    className="w-full h-full object-cover"
+                    onError={() => handleImageError(product._id)}
+                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    loading="lazy"
                   />
-                  <div className="absolute top-2 right-2 bg-amber-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {product.category}
                   </div>
                 </div>
@@ -165,7 +139,7 @@ export default function ProductShowcase() {
                   <p className="text-gray-600 text-sm mb-3">{product.description}</p>
 
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-amber-600">
+                    <span className="text-2xl font-bold text-blue-600">
                       ₹{product.price}
                     </span>
                     <span className="text-sm text-gray-500">
@@ -176,7 +150,7 @@ export default function ProductShowcase() {
                   <button
                     onClick={() => handleAddToCart(product)}
                     disabled={product.stock <= 0}
-                    className="w-full bg-gradient-to-r from-amber-600 to-orange-500 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {product.stock > 0 ? '🛒 Add to Cart' : 'Out of Stock'}
                   </button>

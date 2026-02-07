@@ -51,10 +51,10 @@ export default function CartPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-amber-50 to-orange-50 pt-24 pb-12">
+    <div className="min-h-screen bg-gradient-to-br from-blue-50 to-blue-100 pt-24 pb-12">
       <div className="max-w-7xl mx-auto px-6">
         <div className="mb-8">
-          <Link href="/" className="text-amber-600 hover:text-amber-700 flex items-center gap-2">
+          <Link href="/" className="text-blue-600 hover:text-blue-700 flex items-center gap-2">
             ← Back to Home
           </Link>
         </div>
@@ -69,7 +69,7 @@ export default function CartPage() {
                 <p className="text-xl text-gray-600 mb-4">Your cart is empty</p>
                 <Link
                   href="/"
-                  className="inline-block bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-lg hover:shadow-lg"
+                  className="inline-block bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2 rounded-lg hover:shadow-lg"
                 >
                   Continue Shopping
                 </Link>
@@ -150,7 +150,7 @@ export default function CartPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, customerName: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -165,7 +165,7 @@ export default function CartPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, phone: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       required
                     />
                   </div>
@@ -179,17 +179,17 @@ export default function CartPage() {
                       onChange={(e) =>
                         setFormData({ ...formData, address: e.target.value })
                       }
-                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-amber-500"
+                      className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500"
                       rows="3"
                       required
                     />
                   </div>
 
-                  <div className="bg-amber-50 p-4 rounded-lg">
+                  <div className="bg-blue-50 p-4 rounded-lg">
                     <p className="text-sm text-gray-700">
                       <span className="font-medium">Order Total:</span>
                       <br />
-                      <span className="text-2xl font-bold text-amber-600">
+                      <span className="text-2xl font-bold text-blue-600">
                         ₹{getTotalPrice().toFixed(2)}
                       </span>
                     </p>
@@ -198,7 +198,7 @@ export default function CartPage() {
                   <button
                     type="submit"
                     disabled={loading}
-                    className="w-full bg-gradient-to-r from-amber-600 to-orange-500 text-white py-3 rounded-lg font-medium hover:shadow-lg disabled:opacity-50"
+                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 rounded-lg font-medium hover:shadow-lg disabled:opacity-50"
                   >
                     {loading ? 'Placing Order...' : 'Place Order'}
                   </button>

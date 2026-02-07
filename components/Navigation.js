@@ -37,7 +37,7 @@ export default function Navigation() {
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent">
+          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
             Mithila Makhana
           </span>
         </Link>
@@ -45,19 +45,19 @@ export default function Navigation() {
         <div className="flex items-center gap-8">
           <Link
             href="/"
-            className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+            className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
           >
             Home
           </Link>
           <Link
             href="#products"
-            className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+            className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
           >
             Products
           </Link>
           <Link
             href="#about"
-            className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+            className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
           >
             About
           </Link>
@@ -66,7 +66,7 @@ export default function Navigation() {
             <>
               <Link
                 href="/admin/dashboard"
-                className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
               >
                 🔧 Admin
               </Link>
@@ -80,7 +80,7 @@ export default function Navigation() {
           ) : (
             <Link
               href="/admin-login"
-              className="text-gray-700 hover:text-amber-600 transition-colors font-medium"
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
             >
               🔐 Admin Login
             </Link>
@@ -88,7 +88,7 @@ export default function Navigation() {
 
           <Link
             href="/cart"
-            className="bg-gradient-to-r from-amber-600 to-orange-500 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all relative"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all relative"
           >
             🛒 Cart
             {totalItems > 0 && (

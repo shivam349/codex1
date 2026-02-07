@@ -5,8 +5,17 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: 'images.unsplash.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.pexels.com'
+      },
+      {
+        protocol: 'https',
+        hostname: '**.cloudflare.com'
       }
-    ]
+    ],
+    unoptimized: true
   }
 };
 
