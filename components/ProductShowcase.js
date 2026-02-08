@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
 import Link from 'next/link';
+import Image from 'next/image';
 import { useCart } from '@/lib/context/CartContext';
 import { getProducts } from '@/lib/api';
 import { defaultProducts } from '@/lib/productImages';
@@ -74,40 +75,26 @@ export default function ProductShowcase() {
     return product.image || FALLBACK_IMAGE;
   };
 
-  // Animations
+  // Animations - Optimized to reduce overhead
   useEffect(() => {
+    if (products.length === 0) return;
+    
     const ctx = gsap.context(() => {
+      // Use simpler fade-in animation without scrub for better performance
       cardsRef.current.forEach((card, index) => {
         if (card) {
           gsap.from(card, {
             scrollTrigger: {
               trigger: card,
-              start: 'top 80%',
-              end: 'top 20%',
-              scrub: 1,
-              markers: false,
+              start: 'top 85%',
+              toggleActions: 'play none none none',
+              once: true, // Run animation only once
             },
             opacity: 0,
-            y: 80,
-            rotation: -5 + index * 2,
-            duration: 0.8,
-          });
-        }
-      });
-
-      cardsRef.current.forEach((card) => {
-        if (card) {
-          card.addEventListener('mouseenter', () => {
-            gsap.to(card, {
-              y: -10,
-              duration: 0.3,
-            });
-          });
-          card.addEventListener('mouseleave', () => {
-            gsap.to(card, {
-              y: 0,
-              duration: 0.3,
-            });
+            y: 30,
+            duration: 0.5,
+            delay: index * 0.05, // Stagger effect
+            ease: 'power2.out'
           });
         }
       });
@@ -150,15 +137,18 @@ export default function ProductShowcase() {
                 ref={(el) => {
                   if (el) cardsRef.current[index] = el;
                 }}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl transition-shadow"
+                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
               >
                 <div className="relative h-48 bg-blue-50 overflow-hidden">
-                  <img
+                  <Image
                     src={getImageSource(product)}
                     alt={product.name}
                     onError={() => handleImageError(product._id)}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
+                    className="object-cover hover:scale-105 transition-transform duration-300"
+                    fill
+                    sizes="(max-width: 768px) 100vw, (max-width: 1024px) 50vw, 25vw"
                     loading="lazy"
+                    quality={75}
                   />
                   <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {product.category}

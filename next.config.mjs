@@ -13,9 +13,19 @@ const nextConfig = {
       {
         protocol: 'https',
         hostname: '**.cloudflare.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com'
+      },
+      {
+        protocol: 'https',
+        hostname: 'codex1-nq28.onrender.com'
       }
     ],
-    unoptimized: true
+    // Enable optimization for better performance
+    unoptimized: false,
+    formats: ['image/webp', 'image/avif']
   }
 };
 

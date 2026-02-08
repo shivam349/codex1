@@ -39,4 +39,10 @@ const productSchema = new mongoose.Schema({
   timestamps: true
 });
 
+// Add indexes for better query performance
+productSchema.index({ category: 1 });
+productSchema.index({ createdAt: -1 });
+productSchema.index({ price: 1 });
+productSchema.index({ name: 'text', description: 'text' });
+
 module.exports = mongoose.model('Product', productSchema);

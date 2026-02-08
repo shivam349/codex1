@@ -9,18 +9,35 @@ const { protect } = require('../middleware/auth');
 // @access  Public
 router.get('/', async (req, res) => {
   try {
-    const { category } = req.query;
+    const { category, limit = 50, page = 1 } = req.query;
     
     let filter = {};
     if (category) {
       filter.category = category;
     }
 
-    const products = await Product.find(filter).sort({ createdAt: -1 });
+    // Add pagination
+    const skip = (parseInt(page) - 1) * parseInt(limit);
+    
+    // Use lean() for better performance - returns plain JS objects
+    const products = await Product.find(filter)
+      .sort({ createdAt: -1 })
+      .limit(parseInt(limit))
+      .skip(skip)
+      .lean()
+      .select('-__v'); // Exclude version key
+    
+    const total = await Product.countDocuments(filter);
+    
+    // Set cache headers - cache for 5 minutes
+    res.set('Cache-Control', 'public, max-age=300, s-maxage=600, stale-while-revalidate=86400');
     
     res.json({
       success: true,
       count: products.length,
+      total,
+      page: parseInt(page),
+      pages: Math.ceil(total / parseInt(limit)),
       data: products
     });
   } catch (error) {
@@ -37,7 +54,10 @@ router.get('/', async (req, res) => {
 // @access  Public
 router.get('/:id', async (req, res) => {
   try {
-    const product = await Product.findById(req.params.id);
+    // Use lean() for better performance
+    const product = await Product.findById(req.params.id)
+      .lean()
+      .select('-__v');
     
     if (!product) {
       return res.status(404).json({
@@ -45,6 +65,9 @@ router.get('/:id', async (req, res) => {
         message: 'Product not found'
       });
     }
+
+    // Cache product details for 10 minutes
+    res.set('Cache-Control', 'public, max-age=600, s-maxage=1200, stale-while-revalidate=86400');
 
     res.json({
       success: true,
