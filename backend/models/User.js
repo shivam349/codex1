@@ -12,10 +12,38 @@ const userSchema = new mongoose.Schema({
   },
   password: {
     type: String,
-    required: [true, 'Password is required'],
     minlength: 6
   },
+  name: {
+    type: String,
+    trim: true
+  },
+  image: {
+    type: String
+  },
+  // Google OAuth
+  googleId: {
+    type: String,
+    unique: true,
+    sparse: true
+  },
+  // Email Verification
+  emailVerified: {
+    type: Date,
+    default: null
+  },
+  verificationToken: {
+    type: String
+  },
+  verificationTokenExpires: {
+    type: Date
+  },
+  // User roles
   isAdmin: {
+    type: Boolean,
+    default: false
+  },
+  isUser: {
     type: Boolean,
     default: false
   },
@@ -30,12 +58,19 @@ userSchema.pre('save', async function(next) {
   if (!this.isModified('password')) {
     next();
   }
-  const salt = await bcrypt.genSalt(10);
-  this.password = await bcrypt.hash(this.password, salt);
+  
+  // Only hash if password exists
+  if (this.password) {
+    const salt = await bcrypt.genSalt(10);
+    this.password = await bcrypt.hash(this.password, salt);
+  }
+  
+  next();
 });
 
 // Compare password method
 userSchema.methods.matchPassword = async function(enteredPassword) {
+  if (!this.password) return false;
   return await bcrypt.compare(enteredPassword, this.password);
 };
 

@@ -1,6 +1,7 @@
 import './globals.css';
 import { CartProvider } from '@/lib/context/CartContext';
 import { AuthProvider } from '@/lib/context/AuthContext';
+import { Providers } from './providers';
 import Navigation from '@/components/Navigation';
 
 export const metadata = {
@@ -12,13 +13,16 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white text-gray-900">
-        <AuthProvider>
-          <CartProvider>
-            <Navigation />
-            {children}
-          </CartProvider>
-        </AuthProvider>
+        <Providers>
+          <AuthProvider>
+            <CartProvider>
+              <Navigation />
+              {children}
+            </CartProvider>
+          </AuthProvider>
+        </Providers>
       </body>
     </html>
   );
 }
+

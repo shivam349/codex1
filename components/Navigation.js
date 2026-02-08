@@ -5,11 +5,14 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/context/CartContext';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import { useSession, signOut } from 'next-auth/react';
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
+  const [showUserMenu, setShowUserMenu] = useState(false);
   const { getTotalItems } = useCart();
   const { isAuthenticated, logout } = useAuth();
+  const { data: session } = useSession();
   const router = useRouter();
   const totalItems = getTotalItems();
 
@@ -24,6 +27,12 @@ export default function Navigation() {
 
   const handleLogout = () => {
     logout();
+    router.push('/');
+  };
+
+  const handleUserLogout = async () => {
+    await signOut({ redirect: false });
+    setShowUserMenu(false);
     router.push('/');
   };
 
@@ -62,6 +71,78 @@ export default function Navigation() {
             About
           </Link>
 
+          {/* User Authentication */}
+          {session?.user ? (
+            <div className="relative">
+              <button
+                onClick={() => setShowUserMenu(!showUserMenu)}
+                className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors"
+              >
+                {session.user.image ? (
+                  <img
+                    src={session.user.image}
+                    alt={session.user.name}
+                    className="w-8 h-8 rounded-full border border-blue-600"
+                  />
+                ) : (
+                  <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                    {session.user.name?.[0] || session.user.email?.[0]}
+                  </div>
+                )}
+                <span className="hidden sm:inline text-sm font-medium">
+                  {session.user.name || session.user.email}
+                </span>
+              </button>
+
+              {showUserMenu && (
+                <>
+                  <div
+                    className="fixed inset-0"
+                    onClick={() => setShowUserMenu(false)}
+                  />
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-gray-200 text-sm">
+                      <p className="font-medium text-gray-700">
+                        {session.user.name || 'Account'}
+                      </p>
+                      <p className="text-xs text-gray-500">{session.user.email}</p>
+                    </div>
+                    <Link
+                      href="/profile"
+                      className="block px-4 py-2 text-gray-700 hover:bg-blue-50 text-sm"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      👤 My Profile
+                    </Link>
+                    <Link
+                      href="/orders"
+                      className="block px-4 py-2 text-gray-700 hover:bg-blue-50 text-sm"
+                      onClick={() => setShowUserMenu(false)}
+                    >
+                      📦 Orders
+                    </Link>
+                    <button
+                      onClick={handleUserLogout}
+                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 text-sm border-t border-gray-200"
+                    >
+                      🚪 Sign Out
+                    </button>
+                  </div>
+                </>
+              )}
+            </div>
+          ) : (
+            <>
+              <Link
+                href="/sign-in"
+                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              >
+                👤 Sign In
+              </Link>
+            </>
+          )}
+
+          {/* Admin Authentication */}
           {isAuthenticated() ? (
             <>
               <Link
@@ -74,7 +155,7 @@ export default function Navigation() {
                 onClick={handleLogout}
                 className="text-gray-700 hover:text-red-600 transition-colors font-medium"
               >
-                Logout
+                Admin Logout
               </button>
             </>
           ) : (
@@ -82,7 +163,7 @@ export default function Navigation() {
               href="/admin-login"
               className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
             >
-              🔐 Admin Login
+              🔐 Admin
             </Link>
           )}
 
