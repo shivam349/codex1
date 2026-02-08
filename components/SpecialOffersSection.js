@@ -71,11 +71,11 @@ export default function SpecialOffersSection() {
   return (
     <section
       ref={containerRef}
-      className="py-20 px-6 bg-gradient-to-b from-white to-orange-50"
+      className="py-24 px-6 bg-gradient-to-b from-white to-makhana-50"
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-amber-900 to-orange-600 bg-clip-text text-transparent mb-4">
+          <h2 className="text-5xl font-bold bg-gradient-to-r from-makhana-700 to-earth-600 bg-clip-text text-transparent mb-4">
             🔥 Exclusive Offers
           </h2>
           <p className="text-xl text-gray-600">Limited time promotions on your favorite makhana collections</p>
@@ -101,7 +101,7 @@ export default function SpecialOffersSection() {
                   <p className="text-white/80">{offer.condition}</p>
                 </div>
 
-                <button className="mt-6 px-6 py-2 bg-white text-orange-600 rounded-full font-bold hover:shadow-lg transition-all group-hover:scale-105">
+                <button className="mt-6 px-6 py-2 bg-white text-makhana-600 rounded-full font-bold hover:shadow-lg transition-all group-hover:scale-105">
                   Claim Offer
                 </button>
               </div>
@@ -113,7 +113,7 @@ export default function SpecialOffersSection() {
         </div>
 
         {/* Offer info */}
-        <div className="mt-12 bg-white rounded-2xl p-8 border-2 border-amber-200 text-center">
+        <div className="mt-12 bg-white rounded-2xl p-8 border-2 border-makhana-200 text-center">
           <p className="text-gray-600 text-lg mb-3">
             ⏰ Offers valid until the end of the month
           </p>

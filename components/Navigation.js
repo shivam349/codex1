@@ -46,13 +46,13 @@ export default function Navigation() {
     <nav
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
         scrolled
-          ? 'bg-white/95 backdrop-blur-lg shadow-lg'
+          ? 'bg-white/95 backdrop-blur-lg shadow-soft'
           : 'bg-transparent'
       }`}
     >
       <div className="max-w-7xl mx-auto px-6 py-4 flex justify-between items-center">
         <Link href="/" className="flex items-center gap-2">
-          <span className="text-2xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+          <span className="text-2xl font-bold text-makhana-600">
             Mithila Makhana
           </span>
         </Link>
@@ -60,19 +60,19 @@ export default function Navigation() {
         <div className="flex items-center gap-8">
           <Link
             href="/"
-            className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+            className="text-gray-700 hover:text-makhana-600 transition-colors font-medium"
           >
             Home
           </Link>
           <Link
             href="#products"
-            className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+            className="text-gray-700 hover:text-makhana-600 transition-colors font-medium"
           >
             Products
           </Link>
           <Link
             href="#about"
-            className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+            className="text-gray-700 hover:text-makhana-600 transition-colors font-medium"
           >
             About
           </Link>
@@ -82,16 +82,16 @@ export default function Navigation() {
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
-                className="flex items-center gap-2 text-gray-700 hover:text-blue-600 transition-colors"
+                className="flex items-center gap-2 text-gray-700 hover:text-makhana-600 transition-colors"
               >
                 {session.user.image ? (
                   <img
                     src={session.user.image}
                     alt={session.user.name}
-                    className="w-8 h-8 rounded-full border border-blue-600"
+                    className="w-8 h-8 rounded-full border border-makhana-500"
                   />
                 ) : (
-                  <div className="w-8 h-8 rounded-full bg-blue-600 text-white flex items-center justify-center text-sm font-medium">
+                  <div className="w-8 h-8 rounded-full bg-makhana-500 text-white flex items-center justify-center text-sm font-medium">
                     {session.user.name?.[0] || session.user.email?.[0]}
                   </div>
                 )}
@@ -106,8 +106,8 @@ export default function Navigation() {
                     className="fixed inset-0"
                     onClick={() => setShowUserMenu(false)}
                   />
-                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-xl border border-gray-200 py-2 z-50">
-                    <div className="px-4 py-2 border-b border-gray-200 text-sm">
+                  <div className="absolute right-0 mt-2 w-48 bg-white rounded-lg shadow-card border border-makhana-100 py-2 z-50">
+                    <div className="px-4 py-2 border-b border-makhana-100 text-sm">
                       <p className="font-medium text-gray-700">
                         {session.user.name || 'Account'}
                       </p>
@@ -115,21 +115,21 @@ export default function Navigation() {
                     </div>
                     <Link
                       href="/profile"
-                      className="block px-4 py-2 text-gray-700 hover:bg-blue-50 text-sm"
+                      className="block px-4 py-2 text-gray-700 hover:bg-makhana-50 text-sm"
                       onClick={() => setShowUserMenu(false)}
                     >
                       👤 My Profile
                     </Link>
                     <Link
                       href="/orders"
-                      className="block px-4 py-2 text-gray-700 hover:bg-blue-50 text-sm"
+                      className="block px-4 py-2 text-gray-700 hover:bg-makhana-50 text-sm"
                       onClick={() => setShowUserMenu(false)}
                     >
                       📦 Orders
                     </Link>
                     <button
                       onClick={handleUserLogout}
-                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 text-sm border-t border-gray-200"
+                      className="w-full text-left px-4 py-2 text-red-600 hover:bg-red-50 text-sm border-t border-makhana-100"
                     >
                       🚪 Sign Out
                     </button>
@@ -140,7 +140,7 @@ export default function Navigation() {
           ) : isClient && status !== 'loading' ? (
             <Link
               href="/sign-in"
-              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              className="text-gray-700 hover:text-makhana-600 transition-colors font-medium"
             >
               👤 Sign In
             </Link>
@@ -151,7 +151,7 @@ export default function Navigation() {
             <>
               <Link
                 href="/admin/dashboard"
-                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+                className="text-gray-700 hover:text-makhana-600 transition-colors font-medium"
               >
                 🔧 Admin
               </Link>
@@ -165,7 +165,7 @@ export default function Navigation() {
           ) : (
             <Link
               href="/admin-login"
-              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+              className="text-gray-700 hover:text-makhana-600 transition-colors font-medium"
             >
               🔐 Admin
             </Link>
@@ -173,49 +173,7 @@ export default function Navigation() {
 
           <Link
             href="/cart"
-            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all relative"
-          >
-            🛒 Cart
-            {totalItems > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
-                {totalItems}
-              </span>
-            )}
-          </Link>
-        </div>
-      </div>
-    </nav>
-  );
-}
-
-          {/* Admin Authentication */}
-          {isAuthenticated() ? (
-            <>
-              <Link
-                href="/admin/dashboard"
-                className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
-              >
-                🔧 Admin
-              </Link>
-              <button
-                onClick={handleLogout}
-                className="text-gray-700 hover:text-red-600 transition-colors font-medium"
-              >
-                Admin Logout
-              </button>
-            </>
-          ) : (
-            <Link
-              href="/admin-login"
-              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
-            >
-              🔐 Admin
-            </Link>
-          )}
-
-          <Link
-            href="/cart"
-            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all relative"
+            className="btn-primary relative"
           >
             🛒 Cart
             {totalItems > 0 && (

@@ -63,11 +63,11 @@ export default function TestimonialSection() {
   return (
     <section
       ref={containerRef}
-      className="py-24 px-6 bg-gradient-to-b from-blue-50 to-white"
+      className="py-24 px-6 bg-gradient-to-b from-makhana-50 to-white"
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20">
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-4">
+          <h2 className="text-5xl font-bold bg-gradient-to-r from-makhana-700 to-earth-600 bg-clip-text text-transparent mb-4">
             Loved by Customers
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -80,7 +80,7 @@ export default function TestimonialSection() {
             <div
               key={index}
               ref={(el) => (cardsRef.current[index] = el)}
-              className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-blue-100"
+              className="bg-white rounded-2xl p-8 shadow-lg hover:shadow-xl transition-shadow border border-makhana-100"
             >
               <div className="flex items-start gap-4 mb-4">
                 <div className="text-5xl">{testimonial.avatar}</div>
@@ -94,7 +94,7 @@ export default function TestimonialSection() {
 
               <div className="flex gap-1 mb-4">
                 {[...Array(testimonial.rating)].map((_, i) => (
-                  <span key={i} className="text-blue-400">⭐</span>
+                  <span key={i} className="text-makhana-400">⭐</span>
                 ))}
               </div>
 
@@ -108,15 +108,15 @@ export default function TestimonialSection() {
         {/* Rating badges */}
         <div className="mt-16 flex flex-wrap justify-center gap-8">
           <div className="text-center">
-            <p className="text-4xl font-bold text-blue-600">4.9/5</p>
+            <p className="text-4xl font-bold text-makhana-600">4.9/5</p>
             <p className="text-gray-600">Average Rating</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl font-bold text-blue-600">2000+</p>
+            <p className="text-4xl font-bold text-makhana-600">2000+</p>
             <p className="text-gray-600">Happy Customers</p>
           </div>
           <div className="text-center">
-            <p className="text-4xl font-bold text-blue-700">10K+</p>
+            <p className="text-4xl font-bold text-earth-700">10K+</p>
             <p className="text-gray-600">Orders Delivered</p>
           </div>
         </div>

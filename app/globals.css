@@ -4,11 +4,16 @@
 
 :root {
   color-scheme: light;
+  --makhana-gold: #C67C2E;
+  --earth-brown: #8B5E34;
+  --accent-amber: #F59E0B;
+  --bg-light: #FFF8F0;
+  --bg-section: #FDF2E6;
 }
 
 body {
   @apply bg-white text-gray-900 antialiased;
-  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
 }
 
 html {
@@ -17,45 +22,65 @@ html {
 
 /* Gradient backgrounds */
 .gradient-primary {
-  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+  background: linear-gradient(135deg, #C67C2E 0%, #8B5E34 100%);
 }
 
 .gradient-light {
-  background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+  background: linear-gradient(135deg, #FFF8F0 0%, #FDF2E6 100%);
+}
+
+.gradient-accent {
+  background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);
 }
 
 /* Glass effect */
 .glass {
-  background: rgba(255, 255, 255, 0.8);
+  background: rgba(255, 255, 255, 0.85);
   backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.2);
+  border: 1px solid rgba(198, 124, 46, 0.1);
 }
 
 /* Gradients for sections */
 .gradient-bg {
-  background: radial-gradient(circle at top right, #fff3dd 0%, #fffdf7 35%, #fffdf7 100%);
+  background: linear-gradient(135deg, #FFF8F0 0%, #FDF2E6 100%);
+}
+
+.hero-gradient {
+  background: linear-gradient(135deg, #FFF8F0 0%, #FDF2E6 50%, #E8B896 100%);
 }
 
 /* Custom utilities */
 @layer components {
   .btn-primary {
-    @apply px-6 py-3 rounded-full font-semibold text-white bg-gradient-to-r from-amber-600 to-orange-500 hover:shadow-lg transition-all transform hover:scale-105;
+    @apply px-8 py-3 rounded-xl font-semibold text-white bg-makhana-500 hover:bg-makhana-600 transition-all transform hover:scale-105 shadow-md hover:shadow-lg;
   }
 
   .btn-secondary {
-    @apply px-6 py-3 rounded-full font-semibold border-2 border-amber-600 text-amber-700 hover:bg-amber-50 transition-all;
+    @apply px-8 py-3 rounded-xl font-semibold border-2 border-makhana-500 text-makhana-600 hover:bg-makhana-50 transition-all;
+  }
+
+  .btn-accent {
+    @apply px-8 py-3 rounded-xl font-semibold text-white bg-accent-400 hover:bg-accent-500 transition-all;
   }
 
   .section-title {
-    @apply text-5xl font-bold bg-gradient-to-r from-amber-900 to-orange-600 bg-clip-text text-transparent;
+    @apply text-4xl md:text-5xl font-bold text-gray-900;
+  }
+
+  .section-subtitle {
+    @apply text-lg text-gray-600 mt-3;
   }
 
   .card-base {
-    @apply bg-white rounded-2xl shadow-lg hover:shadow-2xl transition-shadow border border-amber-100;
+    @apply bg-white rounded-2xl shadow-soft hover:shadow-card transition-all border border-makhana-100;
   }
 
   .text-gradient {
-    @apply bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent;
+    @apply bg-gradient-to-r from-makhana-500 to-earth-500 bg-clip-text text-transparent;
+  }
+
+  .badge {
+    @apply inline-flex items-center gap-2 px-4 py-2 rounded-full bg-makhana-50 text-makhana-600 font-medium text-sm;
   }
 }
 
@@ -104,12 +129,23 @@ html {
   }
 }
 
+@keyframes scaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
 @keyframes glow {
   0%, 100% {
-    box-shadow: 0 0 20px rgba(245, 158, 11, 0.3);
+    box-shadow: 0 0 20px rgba(198, 124, 46, 0.3);
   }
   50% {
-    box-shadow: 0 0 30px rgba(245, 158, 11, 0.6);
+    box-shadow: 0 0 30px rgba(198, 124, 46, 0.6);
   }
 }
 
@@ -129,6 +165,10 @@ html {
   animation: slideInRight 0.6s ease-out;
 }
 
+.animate-scaleIn {
+  animation: scaleIn 0.6s ease-out;
+}
+
 .animate-glow {
   animation: glow 2s ease-in-out;
 }
@@ -139,26 +179,38 @@ html {
 }
 
 ::-webkit-scrollbar-track {
-  background: #f1f5f9;
+  background: #FDF2E6;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: linear-gradient(180deg, #f59e0b, #f97316);
+  background: linear-gradient(180deg, #C67C2E, #8B5E34);
   border-radius: 5px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: linear-gradient(180deg, #f97316, #ea580c);
+  background: linear-gradient(180deg, #8B5E34, #6B4423);
 }
 
 /* Selection styling */
 ::selection {
-  background-color: #f59e0b;
+  background-color: #C67C2E;
   color: white;
 }
 
 ::-moz-selection {
-  background-color: #f59e0b;
+  background-color: #C67C2E;
   color: white;
 }
 
+/* Utility classes */
+.text-heading {
+  @apply text-gray-900 font-bold;
+}
+
+.text-body {
+  @apply text-gray-600 font-normal;
+}
+
+.text-muted {
+  @apply text-gray-500 font-normal;
+}

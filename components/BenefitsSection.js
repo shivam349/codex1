@@ -77,11 +77,11 @@ export default function BenefitsSection() {
     <section
       ref={containerRef}
       id="about"
-      className="py-24 px-6 bg-white"
+      className="py-24 px-6 bg-gradient-to-b from-white to-makhana-50"
     >
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-20" ref={titleRef}>
-          <h2 className="text-5xl font-bold bg-gradient-to-r from-blue-900 to-blue-600 bg-clip-text text-transparent mb-4">
+          <h2 className="text-5xl font-bold bg-gradient-to-r from-makhana-700 to-earth-600 bg-clip-text text-transparent mb-4">
             Why Choose Mithila Makhana?
           </h2>
           <p className="text-xl text-gray-600 max-w-2xl mx-auto">
@@ -94,10 +94,10 @@ export default function BenefitsSection() {
             <div
               key={index}
               ref={(el) => (cardsRef.current[index] = el)}
-              className="group relative bg-gradient-to-br from-blue-50 to-blue-100 rounded-2xl p-8 hover:shadow-xl transition-all border border-blue-100"
+              className="group relative bg-gradient-to-br from-makhana-50 to-accent-50 rounded-2xl p-8 hover:shadow-xl transition-all border border-makhana-100"
             >
               {/* Glow effect on hover */}
-              <div className="absolute inset-0 bg-gradient-to-r from-blue-400/0 to-blue-400/0 group-hover:from-blue-400/10 group-hover:to-blue-400/10 rounded-2xl transition-all" />
+              <div className="absolute inset-0 bg-gradient-to-r from-makhana-500/0 to-accent-500/0 group-hover:from-makhana-500/5 group-hover:to-accent-500/5 rounded-2xl transition-all" />
 
               <div className="relative z-10">
                 <div className="text-5xl mb-4">{benefit.icon}</div>
@@ -110,7 +110,7 @@ export default function BenefitsSection() {
               </div>
 
               {/* Decorative element */}
-              <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-blue-200/50 to-blue-200/50 rounded-tl-2xl" />
+              <div className="absolute bottom-0 right-0 w-20 h-20 bg-gradient-to-tl from-makhana-200/30 to-accent-200/30 rounded-tl-2xl" />
             </div>
           ))}
         </div>

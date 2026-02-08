@@ -109,11 +109,11 @@ export default function ProductShowcase() {
   };
 
   return (
-    <section id="products" className="py-20 px-6 bg-white">
+    <section id="products" className="py-24 px-6 bg-white">
       <div className="max-w-7xl mx-auto">
         <div className="text-center mb-16">
           <h2 className="text-4xl md:text-5xl font-bold mb-4">
-            Our <span className="bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
+            Our <span className="bg-gradient-to-r from-makhana-600 to-earth-600 bg-clip-text text-transparent">
               Premium Collection
             </span>
           </h2>
@@ -137,9 +137,9 @@ export default function ProductShowcase() {
                 ref={(el) => {
                   if (el) cardsRef.current[index] = el;
                 }}
-                className="bg-white border border-gray-200 rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
+                className="bg-white border border-makhana-100 rounded-lg overflow-hidden hover:shadow-xl hover:-translate-y-2 transition-all duration-300"
               >
-                <div className="relative h-48 bg-blue-50 overflow-hidden">
+                <div className="relative h-48 bg-makhana-50 overflow-hidden">
                   <Image
                     src={getImageSource(product)}
                     alt={product.name}
@@ -150,7 +150,7 @@ export default function ProductShowcase() {
                     loading="lazy"
                     quality={75}
                   />
-                  <div className="absolute top-2 right-2 bg-blue-600 text-white px-3 py-1 rounded-full text-sm font-medium">
+                  <div className="absolute top-2 right-2 bg-makhana-500 text-white px-3 py-1 rounded-full text-sm font-medium">
                     {product.category}
                   </div>
                 </div>
@@ -160,7 +160,7 @@ export default function ProductShowcase() {
                   <p className="text-gray-600 text-sm mb-3">{product.description}</p>
 
                   <div className="flex items-center justify-between mb-4">
-                    <span className="text-2xl font-bold text-blue-600">
+                    <span className="text-2xl font-bold text-makhana-600">
                       ₹{product.price}
                     </span>
                     <span className="text-sm text-gray-500">
@@ -171,7 +171,7 @@ export default function ProductShowcase() {
                   <button
                     onClick={() => handleAddToCart(product)}
                     disabled={product.stock <= 0}
-                    className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-makhana-500 to-makhana-600 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {product.stock > 0 ? '🛒 Add to Cart' : 'Out of Stock'}
                   </button>

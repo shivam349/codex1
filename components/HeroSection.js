@@ -3,6 +3,7 @@
 import { useEffect, useRef } from 'react';
 import { gsap } from 'gsap';
 import { ScrollTrigger } from 'gsap/ScrollTrigger';
+import Link from 'next/link';
 import MakhanaScene from './MakhanaScene';
 
 gsap.registerPlugin(ScrollTrigger);
@@ -11,7 +12,8 @@ export default function HeroSection() {
   const heroRef = useRef(null);
   const titleRef = useRef(null);
   const subtitleRef = useRef(null);
-  const buttonRef = useRef(null);
+  const ctaRef = useRef(null);
+  const badgesRef = useRef(null);
   const sceneRef = useRef(null);
 
   useEffect(() => {
@@ -28,7 +30,12 @@ export default function HeroSection() {
           y: 30,
           duration: 0.8,
         }, '-=0.5')
-        .from(buttonRef.current, {
+        .from(ctaRef.current, {
+          opacity: 0,
+          y: 20,
+          duration: 0.8,
+        }, '-=0.5')
+        .from(badgesRef.current, {
           opacity: 0,
           y: 20,
           duration: 0.8,
@@ -57,70 +64,85 @@ export default function HeroSection() {
   return (
     <section
       ref={heroRef}
-      className="relative min-h-screen flex items-center justify-center overflow-hidden bg-gradient-to-br from-blue-50 via-slate-50 to-blue-100"
+      className="relative min-h-screen flex items-center justify-center overflow-hidden"
+      style={{
+        background: 'linear-gradient(135deg, #FFF8F0 0%, #FDF2E6 50%, #E8B896 100%)',
+      }}
     >
       {/* Decorative elements */}
-      <div className="absolute top-20 left-10 w-72 h-72 bg-blue-300/20 rounded-full blur-3xl" />
-      <div className="absolute bottom-0 right-10 w-96 h-96 bg-blue-300/20 rounded-full blur-3xl" />
+      <div className="absolute top-20 left-10 w-72 h-72 bg-makhana-400/15 rounded-full blur-3xl" />
+      <div className="absolute bottom-0 right-10 w-96 h-96 bg-makhana-400/10 rounded-full blur-3xl" />
 
-      <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10">
+      <div className="max-w-7xl mx-auto w-full px-6 grid grid-cols-1 lg:grid-cols-2 gap-12 items-center relative z-10 py-20">
         {/* Left content */}
         <div className="space-y-8">
+          {/* Main headline */}
           <div>
             <h1
               ref={titleRef}
-              className="text-5xl lg:text-7xl font-bold bg-gradient-to-r from-blue-900 via-blue-700 to-blue-600 bg-clip-text text-transparent"
+              className="text-5xl lg:text-7xl font-bold text-gray-900 leading-tight"
             >
-              Mithila Makhana
+              Premium Mithila Makhana
             </h1>
-            <p
-              ref={subtitleRef}
-              className="text-xl text-gray-600 mt-4 max-w-lg"
-            >
-              Experience the authentic taste of traditional Mithila popped lotus seeds, crafted with centuries of heritage and modern quality standards.
-            </p>
+            <p className="text-makhana-600 font-semibold text-xl mt-2">Healthy Snack from Bihar</p>
           </div>
 
-          <div
-            ref={buttonRef}
-            className="flex flex-wrap gap-4"
+          {/* Subheading */}
+          <p
+            ref={subtitleRef}
+            className="text-lg text-gray-700 max-w-lg leading-relaxed"
           >
-            <button className="px-8 py-4 bg-gradient-to-r from-blue-600 to-blue-700 text-white rounded-full font-semibold hover:shadow-2xl transition-all transform hover:scale-105">
+            Handpicked foxnuts from the fertile lands of Mithila. Roasted fresh, packed with nutrition, and delivered to your door.
+          </p>
+
+          {/* CTA Buttons */}
+          <div
+            ref={ctaRef}
+            className="flex flex-wrap gap-4 pt-4"
+          >
+            <Link href="#products" className="btn-primary">
               Shop Now
-            </button>
-            <button className="px-8 py-4 border-2 border-blue-600 text-blue-700 rounded-full font-semibold hover:bg-blue-50 transition-all">
-              Learn More
-            </button>
+            </Link>
+            <Link href="#about" className="btn-secondary">
+              Explore Collection
+            </Link>
           </div>
 
-          {/* Features */}
-          <div className="pt-8 border-t border-blue-200 grid grid-cols-3 gap-4">
-            <div>
-              <p className="text-3xl font-bold text-blue-700">100%</p>
-              <p className="text-sm text-gray-600">Natural</p>
+          {/* Trust Badges */}
+          <div
+            ref={badgesRef}
+            className="grid grid-cols-2 gap-3 pt-8"
+          >
+            <div className="badge">
+              <span className="text-xl">🌿</span>
+              <span>100% Natural</span>
             </div>
-            <div>
-              <p className="text-3xl font-bold text-blue-600">Organic</p>
-              <p className="text-sm text-gray-600">Certified</p>
+            <div className="badge">
+              <span className="text-xl">💪</span>
+              <span>High Protein</span>
             </div>
-            <div>
-              <p className="text-3xl font-bold text-blue-700">Fresh</p>
-              <p className="text-sm text-gray-600">Daily</p>
+            <div className="badge">
+              <span className="text-xl">🚜</span>
+              <span>Farm Fresh</span>
+            </div>
+            <div className="badge">
+              <span className="text-xl">🏠</span>
+              <span>Made in Bihar</span>
             </div>
           </div>
         </div>
 
-        {/* Right 3D scene with background image */}
+        {/* Right 3D scene */}
         <div
           ref={sceneRef}
-          className="h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl border-4 border-white relative"
+          className="h-[500px] lg:h-[600px] rounded-3xl overflow-hidden shadow-2xl relative"
           style={{
             backgroundImage: 'url(https://res.cloudinary.com/dgvlnob4f/image/upload/v1770471076/mithila-makhana/yfym8zzxcnqlq31aispc.jpg)',
             backgroundSize: 'cover',
             backgroundPosition: 'center',
           }}
         >
-          <div className="absolute inset-0 bg-black/20" />
+          <div className="absolute inset-0 bg-black/10" />
           <MakhanaScene classNameProp="h-full" />
         </div>
       </div>

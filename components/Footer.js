@@ -9,61 +9,143 @@ export default function Footer() {
         {/* Main footer content */}
         <div className="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
           {/* Brand */}
-          <div>
-            <h3 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-blue-600 bg-clip-text text-transparent mb-4">
+          <div className="space-y-4">
+            <h3 className="text-2xl font-bold text-makhana-400">
               Mithila Makhana
             </h3>
-            <p className="text-gray-400">
-              Premium quality lotus seeds from the heritage wetlands of Mithila.
+            <p className="text-gray-400 leading-relaxed">
+              Premium quality foxnuts from the fertile lands of Mithila, Bihar. Handpicked, naturally roasted, and delivered fresh to your home.
             </p>
+            <div className="flex gap-4 pt-4">
+              <a 
+                href="https://instagram.com" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-makhana-400 hover:text-makhana-300 transition-colors text-xl"
+                title="Instagram"
+              >
+                📷
+              </a>
+              <a 
+                href="https://whatsapp.com" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-makhana-400 hover:text-makhana-300 transition-colors text-xl"
+                title="WhatsApp"
+              >
+                💬
+              </a>
+              <a 
+                href="https://facebook.com" 
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-makhana-400 hover:text-makhana-300 transition-colors text-xl"
+                title="Facebook"
+              >
+                👥
+              </a>
+            </div>
           </div>
 
           {/* Quick Links */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Quick Links</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="#" className="hover:text-amber-400 transition-colors">Home</a></li>
-              <li><a href="#products" className="hover:text-amber-400 transition-colors">Products</a></li>
-              <li><a href="#about" className="hover:text-amber-400 transition-colors">About Us</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">Contact</a></li>
+            <h4 className="text-lg font-semibold text-white mb-6">Quick Links</h4>
+            <ul className="space-y-3 text-gray-400">
+              <li>
+                <a href="/" className="hover:text-makhana-400 transition-colors">
+                  Home
+                </a>
+              </li>
+              <li>
+                <a href="#products" className="hover:text-makhana-400 transition-colors">
+                  Products
+                </a>
+              </li>
+              <li>
+                <a href="#about" className="hover:text-makhana-400 transition-colors">
+                  About Us
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-makhana-400 transition-colors">
+                  Contact
+                </a>
+              </li>
             </ul>
           </div>
 
-          {/* Customer Service */}
+          {/* Information */}
           <div>
-            <h4 className="text-lg font-semibold mb-4">Customer Service</h4>
-            <ul className="space-y-2 text-gray-400">
-              <li><a href="#" className="hover:text-amber-400 transition-colors">Shipping Info</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">Returns</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">FAQ</a></li>
-              <li><a href="#" className="hover:text-amber-400 transition-colors">Support</a></li>
+            <h4 className="text-lg font-semibold text-white mb-6">Information</h4>
+            <ul className="space-y-3 text-gray-400">
+              <li>
+                <a href="#" className="hover:text-makhana-400 transition-colors">
+                  Shipping Policy
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-makhana-400 transition-colors">
+                  Return & Refund
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-makhana-400 transition-colors">
+                  FAQ
+                </a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-makhana-400 transition-colors">
+                  Blog
+                </a>
+              </li>
             </ul>
           </div>
 
           {/* Contact Info */}
-          <div>
-            <h4 className="text-lg font-semibold mb-4">Contact Us</h4>
-            <p className="text-gray-400 mb-2">Email: hello@mithibmakhana.com</p>
-            <p className="text-gray-400 mb-4">Phone: +91 (0) 1234-567-890</p>
-            <div className="flex gap-4">
-              <a href="#" className="text-amber-400 hover:text-amber-300 transition-colors">Facebook</a>
-              <a href="#" className="text-amber-400 hover:text-amber-300 transition-colors">Instagram</a>
-              <a href="#" className="text-amber-400 hover:text-amber-300 transition-colors">Twitter</a>
+          <div className="space-y-6">
+            <div>
+              <h4 className="text-lg font-semibold text-white mb-4">Contact Us</h4>
+              <div className="space-y-3">
+                <div className="flex items-start gap-3">
+                  <span className="text-xl">✉️</span>
+                  <div>
+                    <p className="text-sm text-gray-500">Email</p>
+                    <a href="mailto:hello@mithilamakhana.com" className="text-gray-400 hover:text-makhana-400 transition-colors">
+                      hello@mithilamakhana.com
+                    </a>
+                  </div>
+                </div>
+                <div className="flex items-start gap-3">
+                  <span className="text-xl">📱</span>
+                  <div>
+                    <p className="text-sm text-gray-500">Phone</p>
+                    <a href="tel:+919876543210" className="text-gray-400 hover:text-makhana-400 transition-colors">
+                      +91 98765 43210
+                    </a>
+                  </div>
+                </div>
+              </div>
             </div>
           </div>
         </div>
 
         {/* Divider */}
         <div className="border-t border-gray-700 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center">
+          <div className="flex flex-col md:flex-row justify-between items-center gap-6">
             <p className="text-gray-400 text-sm">
-              © {currentYear} Mithila Makhana. All rights reserved.
+              © {currentYear} Mithila Makhana. All rights reserved. Made with ❤️ in Bihar
             </p>
-            <div className="flex gap-6 mt-4 md:mt-0">
-              <a href="#" className="text-gray-400 hover:text-amber-400 transition-colors text-sm">
+            <div className="flex gap-6 flex-wrap justify-center">
+              <a 
+                href="#" 
+                className="text-gray-400 hover:text-makhana-400 transition-colors text-sm"
+              >
                 Privacy Policy
               </a>
-              <a href="#" className="text-gray-400 hover:text-amber-400 transition-colors text-sm">
+              <a 
+                href="#" 
+                className="text-gray-400 hover:text-makhana-400 transition-colors text-sm border-l border-gray-600 pl-6"
+              >
                 Terms of Service
               </a>
             </div>

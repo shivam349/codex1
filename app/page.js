@@ -1,10 +1,12 @@
 import Navigation from '@/components/Navigation';
 import HeroSection from '@/components/HeroSection';
+import AboutSection from '@/components/AboutSection';
+import WhyChooseUsSection from '@/components/WhyChooseUsSection';
 import ProductShowcase from '@/components/ProductShowcase';
 import SpecialOffersSection from '@/components/SpecialOffersSection';
 import BenefitsSection from '@/components/BenefitsSection';
 import TestimonialSection from '@/components/TestimonialSection';
-import CTASection from '@/components/CTASection';
+import CTABanner from '@/components/CTABanner';
 import Footer from '@/components/Footer';
 
 export default function Home() {
@@ -12,11 +14,12 @@ export default function Home() {
     <main className="min-h-screen bg-white">
       <Navigation />
       <HeroSection />
+      <AboutSection />
+      <WhyChooseUsSection />
       <ProductShowcase />
-      <SpecialOffersSection />
       <BenefitsSection />
       <TestimonialSection />
-      <CTASection />
+      <CTABanner />
       <Footer />
     </main>
   );
