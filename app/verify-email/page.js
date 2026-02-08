@@ -4,6 +4,8 @@ import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
 import { signIn } from 'next-auth/react';
 
+export const dynamic = 'force-dynamic';
+
 export default function VerifyEmail() {
   const searchParams = useSearchParams();
   const router = useRouter();
