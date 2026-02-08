@@ -10,11 +10,17 @@ import { useSession, signOut } from 'next-auth/react';
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
+  const [isClient, setIsClient] = useState(false);
   const { getTotalItems } = useCart();
   const { isAuthenticated, logout } = useAuth();
-  const { data: session } = useSession();
+  const { data: session, status } = useSession();
   const router = useRouter();
   const totalItems = getTotalItems();
+
+  // Ensure hydration match by only rendering interactive elements after client-side load
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -72,7 +78,7 @@ export default function Navigation() {
           </Link>
 
           {/* User Authentication */}
-          {session?.user ? (
+          {isClient && session?.user ? (
             <div className="relative">
               <button
                 onClick={() => setShowUserMenu(!showUserMenu)}
@@ -131,16 +137,56 @@ export default function Navigation() {
                 </>
               )}
             </div>
-          ) : (
+          ) : isClient && status !== 'loading' ? (
+            <Link
+              href="/sign-in"
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+            >
+              👤 Sign In
+            </Link>
+          ) : null}
+
+          {/* Admin Authentication */}
+          {isAuthenticated() ? (
             <>
               <Link
-                href="/sign-in"
+                href="/admin/dashboard"
                 className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
               >
-                👤 Sign In
+                🔧 Admin
               </Link>
+              <button
+                onClick={handleLogout}
+                className="text-gray-700 hover:text-red-600 transition-colors font-medium"
+              >
+                Admin Logout
+              </button>
             </>
+          ) : (
+            <Link
+              href="/admin-login"
+              className="text-gray-700 hover:text-blue-600 transition-colors font-medium"
+            >
+              🔐 Admin
+            </Link>
           )}
+
+          <Link
+            href="/cart"
+            className="bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 py-2 rounded-full hover:shadow-lg transition-all relative"
+          >
+            🛒 Cart
+            {totalItems > 0 && (
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">
+                {totalItems}
+              </span>
+            )}
+          </Link>
+        </div>
+      </div>
+    </nav>
+  );
+}
 
           {/* Admin Authentication */}
           {isAuthenticated() ? (
