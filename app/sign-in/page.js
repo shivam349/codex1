@@ -60,10 +60,31 @@ function SignInContent() {
           setMessage(data.message || 'Registration failed');
         }
       } else {
-        // Sign in with credentials - would need to implement a login endpoint
-        setMessage(
-          'Please verify your email first. Use the sign-up option.'
+        // Sign in with credentials
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/user-login`,
+          {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+              email,
+              password,
+            }),
+          }
         );
+
+        const data = await res.json();
+
+        if (res.ok) {
+          // Store token and redirect
+          localStorage.setItem('token', data.data.token);
+          setMessage('Login successful!');
+          setTimeout(() => {
+            router.push('/');
+          }, 1000);
+        } else {
+          setMessage(data.message || 'Login failed');
+        }
       }
     } catch (error) {
       setMessage('An error occurred. Please try again.');

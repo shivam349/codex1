@@ -10,14 +10,33 @@ const handler = NextAuth({
       allowDangerousEmailAccountLinking: true,
     }),
     CredentialsProvider({
-      name: 'Email Verification',
+      name: 'Credentials',
       credentials: {
         email: { label: 'Email', type: 'email' },
         password: { label: 'Password', type: 'password' },
       },
       async authorize(credentials) {
         try {
-          const res = await fetch(
+          // Try to login first with existing user
+          const loginRes = await fetch(
+            `${process.env.NEXT_PUBLIC_API_URL}/api/auth/user-login`,
+            {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                email: credentials?.email,
+                password: credentials?.password,
+              }),
+            }
+          );
+
+          if (loginRes.ok) {
+            const userData = await loginRes.json();
+            return userData.data;
+          }
+
+          // If login fails, try to register
+          const registerRes = await fetch(
             `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
             {
               method: 'POST',
@@ -30,10 +49,9 @@ const handler = NextAuth({
             }
           );
 
-          const user = await res.json();
-
-          if (res.ok && user.data) {
-            return user.data;
+          if (registerRes.ok) {
+            const userData = await registerRes.json();
+            return userData.data;
           }
 
           return null;

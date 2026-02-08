@@ -284,6 +284,62 @@ router.post('/google', async (req, res) => {
   }
 });
 
+// @route   POST /api/auth/user-login
+// @desc    User login (regular users, not admin)
+// @access  Public
+router.post('/user-login', async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    // Validation
+    if (!email || !password) {
+      return res.status(400).json({
+        success: false,
+        message: 'Please provide email and password'
+      });
+    }
+
+    // Check for user
+    const user = await User.findOne({ email });
+
+    if (!user) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+
+    // Check password
+    const isMatch = await user.matchPassword(password);
+
+    if (!isMatch) {
+      return res.status(401).json({
+        success: false,
+        message: 'Invalid email or password'
+      });
+    }
+
+    // Return user data and token
+    res.json({
+      success: true,
+      data: {
+        id: user._id,
+        email: user.email,
+        name: user.name,
+        image: user.image,
+        token: generateToken(user._id)
+      }
+    });
+
+  } catch (error) {
+    console.error('User login error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error during login'
+    });
+  }
+});
+
 // @route   POST /api/auth/login
 // @desc    Admin login
 // @access  Public

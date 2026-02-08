@@ -132,7 +132,7 @@ export default function AuthModal() {
 
     try {
       const endpoint = activeTab === 'signin' 
-        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/login`
+        ? `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/user-login`
         : `${process.env.NEXT_PUBLIC_API_URL || 'http://localhost:5000'}/api/auth/register`;
 
       const payload = activeTab === 'signin'
@@ -143,16 +143,23 @@ export default function AuthModal() {
             password: formData.password,
           };
 
+      // Create abort controller for timeout
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 10000); // 10 second timeout
+
       const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
+        signal: controller.signal,
       });
+
+      clearTimeout(timeoutId);
 
       const data = await response.json();
 
       if (!response.ok) {
-        throw new Error(data.message || 'Authentication failed');
+        throw new Error(data.message || `Authentication failed (${response.status})`);
       }
 
       // Store token
@@ -165,7 +172,7 @@ export default function AuthModal() {
 
       // Redirect based on what was done
       if (activeTab === 'signup') {
-        // For signup, redirect to check-email or home
+        // For signup, redirect to check-email
         router.push('/check-email?email=' + encodeURIComponent(formData.email));
       } else {
         // For signin, redirect home
@@ -173,7 +180,14 @@ export default function AuthModal() {
         router.refresh();
       }
     } catch (err) {
-      setError(err.message || 'An error occurred');
+      if (err.name === 'AbortError') {
+        setError('Request timeout - Backend server not responding. Please check if backend is running.');
+      } else if (err.message.includes('fetch')) {
+        setError('Network error - Cannot connect to server. Check NEXT_PUBLIC_API_URL.');
+      } else {
+        setError(err.message || 'Server error - Please try again');
+      }
+      console.error('Auth error:', err);
     } finally {
       setLoading(false);
     }
