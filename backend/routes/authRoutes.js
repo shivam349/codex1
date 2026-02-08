@@ -13,34 +13,52 @@ const generateToken = (id) => {
   });
 };
 
-// Email transporter setup
+// Email transporter setup for Brevo (formerly Sendinblue)
 const transporter = nodemailer.createTransport({
-  service: process.env.EMAIL_SERVICE || 'gmail',
+  host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
+  port: process.env.SMTP_PORT || 587,
+  secure: false, // true for 465, false for other ports
   auth: {
-    user: process.env.EMAIL_USER,
-    pass: process.env.EMAIL_PASSWORD
+    user: process.env.SMTP_USER || process.env.EMAIL_USER,
+    pass: process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD
+  },
+  tls: {
+    rejectUnauthorized: false // For development; set to true in production with valid certificates
   }
 });
 
 // Send verification email
 const sendVerificationEmail = async (email, token, userName = 'User') => {
-  const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
-  
-  await transporter.sendMail({
-    from: process.env.EMAIL_USER,
-    to: email,
-    subject: 'Verify your email - Mithila Makhana',
-    html: `
-      <h2>Welcome to Mithila Makhana, ${userName}!</h2>
-      <p>Please verify your email address by clicking the button below:</p>
-      <a href="${verifyUrl}" style="display: inline-block; padding: 10px 20px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0;">
-        Verify Email
-      </a>
-      <p>Or copy this link: ${verifyUrl}</p>
-      <p>This link expires in 24 hours.</p>
-      <p>If you didn't create this account, please ignore this email.</p>
-    `
-  });
+  try {
+    const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
+    
+    // Brevo requires proper sender format
+    const fromEmail = process.env.SMTP_FROM_EMAIL || process.env.EMAIL_USER;
+    const fromName = process.env.SMTP_FROM_NAME || 'Mithila Makhana';
+    
+    const mailOptions = {
+      from: `"${fromName}" <${fromEmail}>`,
+      to: email,
+      subject: 'Verify your email - Mithila Makhana',
+      html: `
+        <h2>Welcome to Mithila Makhana, ${userName}!</h2>
+        <p>Please verify your email address by clicking the button below:</p>
+        <a href="${verifyUrl}" style="display: inline-block; padding: 10px 20px; background-color: #2563eb; color: white; text-decoration: none; border-radius: 5px; margin: 20px 0;">
+          Verify Email
+        </a>
+        <p>Or copy this link: ${verifyUrl}</p>
+        <p>This link expires in 24 hours.</p>
+        <p>If you didn't create this account, please ignore this email.</p>
+      `
+    };
+
+    const info = await transporter.sendMail(mailOptions);
+    console.log('✅ Verification email sent:', info.messageId);
+    return info;
+  } catch (error) {
+    console.error('❌ Email sending failed:', error.message);
+    throw error;
+  }
 };
 
 // @route   POST /api/auth/register

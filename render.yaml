@@ -19,3 +19,16 @@ services:
         value: mithila_makhana_jwt_secret_key_2024_change_in_production
       - key: FRONTEND_URL
         value: https://codex1-jfqm.vercel.app
+      # Brevo Email Configuration
+      - key: SMTP_HOST
+        value: smtp-relay.brevo.com
+      - key: SMTP_PORT
+        value: 587
+      - key: SMTP_USER
+        sync: false
+      - key: SMTP_PASSWORD
+        sync: false
+      - key: SMTP_FROM_EMAIL
+        sync: false
+      - key: SMTP_FROM_NAME
+        value: Mithila Makhana
