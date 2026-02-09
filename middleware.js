@@ -1,6 +1,20 @@
 import { clerkMiddleware } from '@clerk/nextjs/server';
 
-export default clerkMiddleware();
+const publicRoutes = [
+  '/',
+  '/cart',
+  '/admin-login',
+  '/admin(.*)',
+  '/sign-in',
+  '/check-email',
+  '/verify-email',
+  '/product(.*)',
+  '/api/(.*)'
+];
+
+export default clerkMiddleware({
+  publicRoutes
+});
 
 export const config = {
   matcher: [
