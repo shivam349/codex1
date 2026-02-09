@@ -3,6 +3,8 @@ import { CartProvider } from '@/lib/context/CartContext';
 import { AuthProvider } from '@/lib/context/AuthContext';
 import { Providers } from './providers';
 import Navigation from '@/components/Navigation';
+import { ClerkProvider } from '@clerk/nextjs';
+import ClerkHeader from '@/components/ClerkHeader';
 
 export const metadata = {
   title: 'Mithila Makhana 3D Store - Premium Lotus Seeds',
@@ -13,14 +15,17 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white text-gray-900">
-        <Providers>
-          <AuthProvider>
-            <CartProvider>
-              <Navigation />
-              {children}
-            </CartProvider>
-          </AuthProvider>
-        </Providers>
+        <ClerkProvider>
+          <Providers>
+            <AuthProvider>
+              <CartProvider>
+                <ClerkHeader />
+                <Navigation />
+                {children}
+              </CartProvider>
+            </AuthProvider>
+          </Providers>
+        </ClerkProvider>
       </body>
     </html>
   );
