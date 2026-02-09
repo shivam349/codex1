@@ -2,7 +2,6 @@
 
 import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState, Suspense } from 'react';
-import { signIn } from 'next-auth/react';
 
 function VerifyEmailContent() {
   const searchParams = useSearchParams();
