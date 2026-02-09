@@ -13,6 +13,7 @@ export default function SignInPage() {
   const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
+  const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
 
@@ -100,6 +101,24 @@ export default function SignInPage() {
     setName('');
   };
 
+  const handleGoogleSignIn = async () => {
+    setError('');
+    setSuccess('');
+    setOauthLoading(true);
+
+    try {
+      const { error: oauthError } = await authService.signInWithOAuth('google');
+      if (oauthError) {
+        setError(oauthError.message);
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+      console.error(err);
+    } finally {
+      setOauthLoading(false);
+    }
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
@@ -126,6 +145,23 @@ export default function SignInPage() {
               <p className="text-green-600 text-sm">{success}</p>
             </div>
           )}
+
+          <div className="space-y-4">
+            <button
+              type="button"
+              onClick={handleGoogleSignIn}
+              disabled={oauthLoading}
+              className="w-full border border-gray-200 bg-white text-gray-800 py-3 px-4 rounded-lg font-medium hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {oauthLoading ? 'Connecting to Google...' : 'Continue with Google'}
+            </button>
+
+            <div className="flex items-center gap-4">
+              <div className="h-px flex-1 bg-gray-200" />
+              <span className="text-xs font-medium text-gray-500">OR</span>
+              <div className="h-px flex-1 bg-gray-200" />
+            </div>
+          </div>
 
           <form onSubmit={handleSubmit} className="space-y-4">
             {/* Name field (only for sign up) */}
@@ -201,7 +237,7 @@ export default function SignInPage() {
             {/* Submit button */}
             <button
               type="submit"
-              disabled={loading}
+              disabled={loading || oauthLoading}
               className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? (
