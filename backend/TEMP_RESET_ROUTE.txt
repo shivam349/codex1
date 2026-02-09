@@ -1,0 +1,50 @@
+// Simple endpoint workaround - add to authRoutes.js temporarily
+// This resets admin password for the Render deployment
+
+// Add this route to backend/routes/authRoutes.js at the end (before module.exports):
+
+/*
+// @route   POST /api/auth/reset-admin-temp
+// @desc    Temporary admin reset for deployment
+// @access  Public
+router.post('/reset-admin-temp', async (req, res) => {
+  try {
+    const { secret } = req.body;
+    
+    if (secret !== 'mithila-reset-2024') {
+      return res.status(403).json({
+        success: false,
+        message: 'Invalid secret'
+      });
+    }
+
+    let admin = await User.findOne({ email: 'admin@mithilamakhana.com' });
+    
+    if (!admin) {
+      admin = new User({
+        email: 'admin@mithilamakhana.com',
+        password: 'admin123',
+        isAdmin: true,
+        emailVerified: new Date()
+      });
+    } else {
+      admin.password = 'admin123';
+      admin.isAdmin = true;
+    }
+    
+    await admin.save();
+    const testMatch = await admin.matchPassword('admin123');
+    
+    res.json({
+      success: true,
+      message: 'Admin reset successful',
+      passwordTest: testMatch
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+*/

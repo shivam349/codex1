@@ -12,7 +12,6 @@ const authRoutes = require('./routes/authRoutes');
 const productRoutes = require('./routes/productRoutes');
 const orderRoutes = require('./routes/orderRoutes');
 const uploadRoutes = require('./routes/uploadRoutes');
-const resetRoutes = require('./routes/resetRoutes');
 
 // Initialize Express
 const app = express();
@@ -84,7 +83,6 @@ app.use('/api/auth', authRoutes);
 app.use('/api/products', productRoutes);
 app.use('/api/orders', orderRoutes);
 app.use('/api/uploads', uploadRoutes);
-app.use('/api/reset', resetRoutes); // TEMPORARY - Remove after admin reset
 
 // 404 Error Handler
 app.use((req, res) => {

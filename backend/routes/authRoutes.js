@@ -473,4 +473,52 @@ router.post('/admin-register', async (req, res) => {
   }
 });
 
+// @route   POST /api/auth/reset-admin
+// @desc    Reset admin password temporarily
+// @access  Public (REMOVE AFTER USE)
+router.post('/reset-admin', async (req, res) => {
+  try {
+    const { secret } = req.body;
+    
+    if (secret !== 'mithila-reset-2024') {
+      return res.status(403).json({
+        success: false,
+        message: 'Invalid secret key'
+      });
+    }
+
+    let admin = await User.findOne({ email: 'admin@mithilamakhana.com' });
+    
+    if (!admin) {
+      admin = new User({
+        email: 'admin@mithilamakhana.com',
+        password: 'admin123',
+        isAdmin: true,
+        emailVerified: new Date()
+      });
+    } else {
+      admin.password = 'admin123';
+      admin.isAdmin = true;
+      admin.emailVerified = new Date();
+    }
+    
+    await admin.save();
+    const testMatch = await admin.matchPassword('admin123');
+    
+    res.json({
+      success: true,
+      message: 'Admin password reset successfully!',
+      email: 'admin@mithilamakhana.com',
+      password: 'admin123',
+      passwordTest: testMatch
+    });
+  } catch (error) {
+    console.error('Reset error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
 module.exports = router;
