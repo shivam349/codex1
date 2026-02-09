@@ -1,98 +1,110 @@
 'use client';
 
-import { useState, Suspense } from 'react';
+import { useState, useEffect } from 'react';
 import Link from 'next/link';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { useRouter } from 'next/navigation';
+import { authService } from '@/lib/supabase';
 
-function SignInContent() {
+export default function SignInPage() {
   const router = useRouter();
-  const searchParams = useSearchParams();
-  const error = searchParams.get('error');
-
+  const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [name, setName] = useState('');
-  const [isSignUp, setIsSignUp] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [message, setMessage] = useState('');
+  const [error, setError] = useState('');
+  const [success, setSuccess] = useState('');
 
-  const handleEmailAuth = async (e) => {
+  // Check if user is already logged in
+  useEffect(() => {
+    const checkUser = async () => {
+      const { user } = await authService.getCurrentUser();
+      if (user) {
+        router.push('/');
+      }
+    };
+    checkUser();
+  }, [router]);
+
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setError('');
+    setSuccess('');
     setLoading(true);
-    setMessage('');
 
     try {
       if (isSignUp) {
-        // Register
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/register`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email,
-              password,
-              name,
-            }),
-          }
-        );
+        // Validate passwords match
+        if (password !== confirmPassword) {
+          setError('Passwords do not match');
+          setLoading(false);
+          return;
+        }
 
-        const data = await res.json();
+        // Validate password length
+        if (password.length < 6) {
+          setError('Password must be at least 6 characters');
+          setLoading(false);
+          return;
+        }
 
-        if (res.ok) {
-          setMessage(
-            'Registration successful! Please check your email to verify your account.'
-          );
+        // Sign up
+        const { data, error: signUpError } = await authService.signUp(email, password, {
+          full_name: name
+        });
+
+        if (signUpError) {
+          setError(signUpError.message);
+        } else {
+          setSuccess('Account created! Please check your email to verify your account.');
+          // Clear form
           setEmail('');
           setPassword('');
+          setConfirmPassword('');
           setName('');
+          // Optionally redirect after a delay
           setTimeout(() => {
-            router.push('/check-email?email=' + encodeURIComponent(email));
+            router.push('/check-email');
           }, 2000);
-        } else {
-          setMessage(data.message || 'Registration failed');
         }
       } else {
-        // Sign in with credentials
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_API_URL}/api/auth/user-login`,
-          {
-            method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({
-              email,
-              password,
-            }),
-          }
-        );
+        // Sign in
+        const { data, error: signInError } = await authService.signIn(email, password);
 
-        const data = await res.json();
-
-        if (res.ok) {
-          // Store token and redirect
-          localStorage.setItem('token', data.data.token);
-          setMessage('Login successful!');
+        if (signInError) {
+          setError(signInError.message);
+        } else {
+          setSuccess('Signed in successfully!');
+          // Redirect to home page
           setTimeout(() => {
             router.push('/');
           }, 1000);
-        } else {
-          setMessage(data.message || 'Login failed');
         }
       }
-    } catch (error) {
-      setMessage('An error occurred. Please try again.');
-      console.error('Auth error:', error);
+    } catch (err) {
+      setError('An unexpected error occurred');
+      console.error(err);
+    } finally {
+      setLoading(false);
     }
+  };
 
-    setLoading(false);
+  const toggleMode = () => {
+    setIsSignUp(!isSignUp);
+    setError('');
+    setSuccess('');
+    setEmail('');
+    setPassword('');
+    setConfirmPassword('');
+    setName('');
   };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center px-4 py-8">
       <div className="w-full max-w-md">
         <div className="bg-white rounded-lg shadow-xl p-8">
-          {/* Header */}
-          <div className="text-center mb-8">
+          <div className="text-center mb-6">
             <h1 className="text-3xl font-bold bg-gradient-to-r from-blue-600 to-blue-700 bg-clip-text text-transparent">
               Mithila Makhana
             </h1>
@@ -101,89 +113,112 @@ function SignInContent() {
             </p>
           </div>
 
-          {/* Error/Success Messages */}
+          {/* Error Message */}
           {error && (
-            <div className="mb-4 p-3 bg-red-50 border border-red-200 rounded-lg text-red-700 text-sm">
-              Authentication failed. Please try again.
+            <div className="mb-4 p-3 rounded-lg bg-red-50 border border-red-200">
+              <p className="text-red-600 text-sm">{error}</p>
             </div>
           )}
 
-          {message && (
-            <div
-              className={`mb-4 p-3 rounded-lg text-sm ${
-                message.includes('successful')
-                  ? 'bg-green-50 border border-green-200 text-green-700'
-                  : 'bg-yellow-50 border border-yellow-200 text-yellow-700'
-              }`}
-            >
-              {message}
+          {/* Success Message */}
+          {success && (
+            <div className="mb-4 p-3 rounded-lg bg-green-50 border border-green-200">
+              <p className="text-green-600 text-sm">{success}</p>
             </div>
           )}
 
-          {/* Note: Google Sign In via Clerk in header */}
-          <p className="text-sm text-gray-600 text-center mb-6">
-            Use <strong>Clerk</strong> (top right) for Google authentication
-          </p>
-
-          {/* Email Form */}
-          <form onSubmit={handleEmailAuth} className="space-y-4">
+          <form onSubmit={handleSubmit} className="space-y-4">
+            {/* Name field (only for sign up) */}
             {isSignUp && (
               <div>
-                <label className="block text-sm font-medium text-gray-700 mb-2">
+                <label htmlFor="name" className="block text-sm font-medium text-gray-700 mb-1">
                   Full Name
                 </label>
                 <input
                   type="text"
+                  id="name"
                   value={name}
                   onChange={(e) => setName(e.target.value)}
-                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                  placeholder="John Doe"
+                  required
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Enter your full name"
                 />
               </div>
             )}
 
+            {/* Email field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-1">
                 Email Address
               </label>
               <input
                 type="email"
+                id="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="you@example.com"
                 required
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Enter your email"
               />
             </div>
 
+            {/* Password field */}
             <div>
-              <label className="block text-sm font-medium text-gray-700 mb-2">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-1">
                 Password
               </label>
               <input
                 type="password"
+                id="password"
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder={isSignUp ? 'Create a password' : 'Enter your password'}
                 required
+                minLength={6}
+                className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                placeholder="Enter your password"
               />
             </div>
 
+            {/* Confirm Password field (only for sign up) */}
+            {isSignUp && (
+              <div>
+                <label htmlFor="confirmPassword" className="block text-sm font-medium text-gray-700 mb-1">
+                  Confirm Password
+                </label>
+                <input
+                  type="password"
+                  id="confirmPassword"
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all"
+                  placeholder="Confirm your password"
+                />
+              </div>
+            )}
+
+            {/* Submit button */}
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-2 rounded-lg font-medium hover:shadow-lg transition-all disabled:opacity-50"
+              className="w-full bg-gradient-to-r from-blue-600 to-blue-700 text-white py-3 px-4 rounded-lg font-medium hover:from-blue-700 hover:to-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {loading
-                ? 'Processing...'
-                : isSignUp
-                  ? 'Create Account & Verify Email'
-                  : 'Sign In'}
+              {loading ? (
+                <span className="flex items-center justify-center">
+                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                  </svg>
+                  {isSignUp ? 'Creating Account...' : 'Signing In...'}
+                </span>
+              ) : (
+                isSignUp ? 'Sign Up' : 'Sign In'
+              )}
             </button>
           </form>
 
-          {/* Toggle Sign Up / Sign In */}
+          {/* Toggle between sign in and sign up */}
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               {isSignUp
@@ -191,45 +226,22 @@ function SignInContent() {
                 : "Don't have an account? "}
               <button
                 type="button"
-                onClick={() => {
-                  setIsSignUp(!isSignUp);
-                  setMessage('');
-                }}
-                className="text-blue-600 font-medium hover:underline"
+                onClick={toggleMode}
+                className="text-blue-600 font-medium hover:underline focus:outline-none"
               >
                 {isSignUp ? 'Sign In' : 'Sign Up'}
               </button>
             </p>
           </div>
 
-          {/* Link to Admin */}
-          <div className="mt-4 pt-4 border-t border-gray-200 text-center">
-            <Link
-              href="/admin-login"
-              className="text-sm text-gray-600 hover:text-blue-600 font-medium"
-            >
-              🔐 Admin Panel
+          {/* Back to home link */}
+          <div className="mt-4 text-center">
+            <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
+              ← Back to Home
             </Link>
           </div>
         </div>
       </div>
     </div>
-  );
-}
-
-export default function SignIn() {
-  return (
-    <Suspense
-      fallback={
-        <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-blue-50 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-            <p className="text-gray-600">Loading...</p>
-          </div>
-        </div>
-      }
-    >
-      <SignInContent />
-    </Suspense>
   );
 }

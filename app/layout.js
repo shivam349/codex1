@@ -1,6 +1,7 @@
 import './globals.css';
 import { CartProvider } from '@/lib/context/CartContext';
 import { AuthProvider } from '@/lib/context/AuthContext';
+import { SupabaseAuthProvider } from '@/lib/context/SupabaseAuthContext';
 import { Providers } from './providers';
 import Navigation from '@/components/Navigation';
 import { ClerkProvider } from '@clerk/nextjs';
@@ -16,15 +17,17 @@ export default function RootLayout({ children }) {
     <html lang="en" suppressHydrationWarning>
       <body className="bg-white text-gray-900">
         <ClerkProvider>
-          <Providers>
-            <AuthProvider>
-              <CartProvider>
-                <ClerkHeader />
-                <Navigation />
-                {children}
-              </CartProvider>
-            </AuthProvider>
-          </Providers>
+          <SupabaseAuthProvider>
+            <Providers>
+              <AuthProvider>
+                <CartProvider>
+                  <ClerkHeader />
+                  <Navigation />
+                  {children}
+                </CartProvider>
+              </AuthProvider>
+            </Providers>
+          </SupabaseAuthProvider>
         </ClerkProvider>
       </body>
     </html>
