@@ -9,11 +9,11 @@ const publicRoutes = [
   '/check-email',
   '/verify-email',
   '/product(.*)',
-  '/api/(.*)'
+  '/api/(.*)',
 ];
 
 export default clerkMiddleware({
-  publicRoutes
+  publicRoutes,
 });
 
 export const config = {
@@ -24,3 +24,4 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
+
