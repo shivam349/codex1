@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/lib/context/SupabaseAuthContext';
+import { useAuth } from '@/lib/context/FirebaseAuthContext';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';

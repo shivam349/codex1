@@ -1,11 +1,10 @@
 import './globals.css';
 import { CartProvider } from '@/lib/context/CartContext';
 import { AuthProvider } from '@/lib/context/AuthContext';
-import { SupabaseAuthProvider } from '@/lib/context/SupabaseAuthContext';
+import { FirebaseAuthProvider } from '@/lib/context/FirebaseAuthContext';
 import { Providers } from './providers';
 import Navigation from '@/components/Navigation';
-import { ClerkProvider } from '@clerk/nextjs';
-import ClerkHeader from '@/components/ClerkHeader';
+import FirebaseHeader from '@/components/FirebaseHeader';
 
 export const metadata = {
   title: 'Mithila Makhana 3D Store - Premium Lotus Seeds',
@@ -15,23 +14,21 @@ export const metadata = {
 
 export default function RootLayout({ children }) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <body className="bg-white text-gray-900">
-          <SupabaseAuthProvider>
-            <Providers>
-              <AuthProvider>
-                <CartProvider>
-                  <ClerkHeader />
-                  <Navigation />
-                  {children}
-                </CartProvider>
-              </AuthProvider>
-            </Providers>
-          </SupabaseAuthProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+    <html lang="en" suppressHydrationWarning>
+      <body className="bg-white text-gray-900">
+        <FirebaseAuthProvider>
+          <Providers>
+            <AuthProvider>
+              <CartProvider>
+                <FirebaseHeader />
+                <Navigation />
+                {children}
+              </CartProvider>
+            </AuthProvider>
+          </Providers>
+        </FirebaseAuthProvider>
+      </body>
+    </html>
   );
 }
 

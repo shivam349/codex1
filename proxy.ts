@@ -1,20 +1,5 @@
-import { clerkMiddleware } from '@clerk/nextjs/server';
-
-const publicRoutes = [
-  '/',
-  '/cart',
-  '/admin-login',
-  '/admin(.*)',
-  '/sign-in',
-  '/check-email',
-  '/verify-email',
-  '/product(.*)',
-  '/api/(.*)',
-];
-
-export default clerkMiddleware({
-  publicRoutes,
-});
+// Firebase doesn't require middleware for authentication management
+// This file can be removed if no other middleware is needed
 
 export const config = {
   matcher: [
@@ -24,4 +9,5 @@ export const config = {
     '/(api|trpc)(.*)',
   ],
 };
+
 

@@ -68,9 +68,6 @@ export default function Navigation() {
             About
           </Link>
 
-          {/* User Authentication - Handled by ClerkHeader */}
-          {/* Clerk auth UI is in ClerkHeader component */}
-
           {/* Admin Authentication */}
           {isAuthenticated() ? (
             <>

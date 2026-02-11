@@ -14,21 +14,36 @@ const generateToken = (id) => {
 };
 
 // Email transporter setup for Brevo (formerly Sendinblue)
-const transporter = nodemailer.createTransport({
-  host: process.env.SMTP_HOST || 'smtp-relay.brevo.com',
-  port: process.env.SMTP_PORT || 587,
-  secure: false, // true for 465, false for other ports
-  auth: {
-    user: process.env.SMTP_USER || process.env.EMAIL_USER,
-    pass: process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD
-  },
-  tls: {
-    rejectUnauthorized: false // For development; set to true in production with valid certificates
+// DISABLED - Email functionality not required for frontend authentication
+const createTransporter = () => {
+  if (!process.env.SMTP_HOST || !process.env.SMTP_USER) {
+    console.warn('⚠️ Email configuration not set. Email functionality disabled.');
+    return null;
   }
-});
+  
+  return nodemailer.createTransport({
+    host: process.env.SMTP_HOST,
+    port: process.env.SMTP_PORT || 587,
+    secure: false, // true for 465, false for other ports
+    auth: {
+      user: process.env.SMTP_USER || process.env.EMAIL_USER,
+      pass: process.env.SMTP_PASSWORD || process.env.EMAIL_PASSWORD
+    },
+    tls: {
+      rejectUnauthorized: false // For development; set to true in production with valid certificates
+    }
+  });
+};
+
+const transporter = createTransporter();
 
 // Send verification email
 const sendVerificationEmail = async (email, token, userName = 'User') => {
+  if (!transporter) {
+    console.warn('⚠️ Email not configured. Skipping verification email.');
+    return { messageId: 'mock-' + Date.now() };
+  }
+
   try {
     const verifyUrl = `${process.env.FRONTEND_URL}/verify-email?token=${token}`;
     
@@ -57,7 +72,8 @@ const sendVerificationEmail = async (email, token, userName = 'User') => {
     return info;
   } catch (error) {
     console.error('❌ Email sending failed:', error.message);
-    throw error;
+    // Don't throw - allow signup to continue even if email fails
+    return { messageId: 'error-' + Date.now(), error: error.message };
   }
 };
 
