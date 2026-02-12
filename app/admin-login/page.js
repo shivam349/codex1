@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation';
 export default function AdminLogin() {
   const { loginAdmin } = useAuth();
   const router = useRouter();
-  const [email, setEmail] = useState('admin@mithilamakhana.com');
+  const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
@@ -86,12 +86,6 @@ export default function AdminLogin() {
               {loading ? 'Logging in...' : 'Login to Admin'}
             </button>
           </form>
-
-          <div className="mt-6 p-4 bg-blue-50 rounded-lg text-sm text-gray-700">
-            <p className="font-medium mb-2">Demo Credentials:</p>
-            <p>Email: admin@mithilamakhana.com</p>
-            <p>Password: admin123</p>
-          </div>
         </div>
       </div>
     </div>
