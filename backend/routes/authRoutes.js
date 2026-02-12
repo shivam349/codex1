@@ -537,4 +537,42 @@ router.post('/reset-admin', async (req, res) => {
   }
 });
 
+// Initialize admin user (auto-create if doesn't exist)
+router.post('/init-admin', async (req, res) => {
+  try {
+    let admin = await User.findOne({ email: 'admin@mithilamakhana.com' });
+    
+    if (admin) {
+      return res.json({
+        success: true,
+        message: 'Admin user already exists',
+        email: admin.email
+      });
+    }
+
+    // Create admin if doesn't exist
+    admin = new User({
+      email: 'admin@mithilamakhana.com',
+      password: 'admin123',
+      isAdmin: true,
+      emailVerified: new Date()
+    });
+    
+    await admin.save();
+    
+    res.json({
+      success: true,
+      message: 'Admin user created successfully',
+      email: admin.email
+    });
+  } catch (error) {
+    console.error('Init admin error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Failed to initialize admin'
+    });
+  }
+});
+
 module.exports = router;
+
