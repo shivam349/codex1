@@ -1,11 +1,11 @@
 'use client';
 
 import { useState } from 'react';
-import { signUp, signIn, signInWithGoogle, logOut } from '@/lib/firebase';
+import { signInWithGoogle } from '@/lib/firebase';
 import { useAuth } from '@/lib/context/FirebaseAuthContext';
 
 export default function AuthButtons() {
-  const { user, loading } = useAuth();
+  const { user, loading, signIn, signUp, signOut } = useAuth();
   const [showAuthModal, setShowAuthModal] = useState(false);
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
@@ -19,12 +19,12 @@ export default function AuthButtons() {
     setIsLoading(true);
 
     const authFunction = isSignUp ? signUp : signIn;
-    const { user, error } = await authFunction(email, password);
+    const { user: authUser, error: authError } = await authFunction(email, password);
 
     setIsLoading(false);
 
-    if (error) {
-      setError(error);
+    if (authError) {
+      setError(authError);
     } else {
       setShowAuthModal(false);
       setEmail('');
@@ -35,18 +35,22 @@ export default function AuthButtons() {
   const handleGoogleSignIn = async () => {
     setError('');
     setIsLoading(true);
-    const { user, error } = await signInWithGoogle();
+    
+    const { user: googleUser, error: googleError } = await signInWithGoogle();
+    
     setIsLoading(false);
 
-    if (error) {
-      setError(error);
+    if (googleError) {
+      setError(googleError.message || 'Failed to sign in with Google');
+      console.log('Google sign-in error:', googleError);
     } else {
       setShowAuthModal(false);
+      console.log('Google sign-in successful:', googleUser);
     }
   };
 
   const handleLogOut = async () => {
-    await logOut();
+    await signOut();
   };
 
   if (loading) {
