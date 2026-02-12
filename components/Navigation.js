@@ -10,21 +10,19 @@ import AuthButtons from './AuthButtons';
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
   const [isClient, setIsClient] = useState(false);
+  const [isAdminPage, setIsAdminPage] = useState(false);
   const { getTotalItems } = useCart();
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
   const pathname = usePathname();
   const totalItems = getTotalItems();
 
-  // Hide navigation on admin pages and admin-login
-  if (pathname?.startsWith('/admin') || pathname === '/admin-login') {
-    return null;
-  }
-
   // Ensure hydration match by only rendering interactive elements after client-side load
   useEffect(() => {
     setIsClient(true);
-  }, []);
+    // Check if on admin pages after client loads
+    setIsAdminPage(pathname?.startsWith('/admin') || pathname === '/admin-login');
+  }, [pathname]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -39,6 +37,11 @@ export default function Navigation() {
     logout();
     router.push('/');
   };
+
+  // Don't show navigation on admin pages
+  if (isAdminPage) {
+    return null;
+  }
 
   return (
     <nav
