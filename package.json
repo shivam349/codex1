@@ -13,7 +13,6 @@
     "dev:all": "concurrently \"npm run dev\" \"npm run server:dev\""
   },
   "dependencies": {
-    "firebase": "^11.0.0",
     "@react-three/drei": "^9.120.4",
     "@react-three/fiber": "^8.17.10",
     "bcryptjs": "^2.4.3",
@@ -21,6 +20,7 @@
     "cors": "^2.8.6",
     "dotenv": "^17.2.4",
     "express": "^5.2.1",
+    "firebase": "^11.10.0",
     "gsap": "^3.12.5",
     "jsonwebtoken": "^9.0.3",
     "mongoose": "^9.1.6",

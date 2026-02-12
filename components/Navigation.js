@@ -5,6 +5,7 @@ import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/context/CartContext';
 import { useAuth } from '@/lib/context/AuthContext';
 import { useRouter } from 'next/navigation';
+import AuthButtons from './AuthButtons';
 
 export default function Navigation() {
   const [scrolled, setScrolled] = useState(false);
@@ -104,6 +105,9 @@ export default function Navigation() {
               </span>
             )}
           </Link>
+
+          {/* Firebase Authentication Buttons */}
+          <AuthButtons />
         </div>
       </div>
     </nav>
