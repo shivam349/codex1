@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, useEffect } from 'react';
 import { useCart } from '@/lib/context/CartContext';
 import { useAuth } from '@/lib/context/AuthContext';
-import { useRouter } from 'next/navigation';
+import { useRouter, usePathname } from 'next/navigation';
 import AuthButtons from './AuthButtons';
 
 export default function Navigation() {
@@ -13,7 +13,13 @@ export default function Navigation() {
   const { getTotalItems } = useCart();
   const { isAuthenticated, logout } = useAuth();
   const router = useRouter();
+  const pathname = usePathname();
   const totalItems = getTotalItems();
+
+  // Hide navigation on admin pages and admin-login
+  if (pathname?.startsWith('/admin') || pathname === '/admin-login') {
+    return null;
+  }
 
   // Ensure hydration match by only rendering interactive elements after client-side load
   useEffect(() => {
