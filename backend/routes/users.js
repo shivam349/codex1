@@ -5,9 +5,12 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const { protect } = require('../middleware/auth');
 
+// Default JWT Secret (use env variable if available)
+const JWT_SECRET = process.env.JWT_SECRET || 'mithila_makhana_jwt_secret_key_2024_change_in_production';
+
 // Generate JWT Token
 const generateToken = (id) => {
-  return jwt.sign({ id }, process.env.JWT_SECRET, {
+  return jwt.sign({ id }, JWT_SECRET, {
     expiresIn: '30d'
   });
 };
