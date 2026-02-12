@@ -389,10 +389,14 @@ router.post('/login', async (req, res) => {
       });
     }
 
+    console.log('🔐 Login attempt for:', email);
+
     // Check for user
     const user = await User.findOne({ email });
+    console.log('📍 User found:', !!user);
 
     if (!user) {
+      console.log('❌ User not found:', email);
       return res.status(401).json({
         success: false,
         message: 'Invalid credentials'
@@ -401,6 +405,7 @@ router.post('/login', async (req, res) => {
 
     // Check password
     const isMatch = await user.matchPassword(password);
+    console.log('🔐 Password match:', isMatch);
 
     if (!isMatch) {
       return res.status(401).json({
@@ -418,6 +423,7 @@ router.post('/login', async (req, res) => {
     }
 
     // Return user data and token
+    console.log('✅ Login successful for:', email);
     res.json({
       success: true,
       data: {
@@ -429,10 +435,10 @@ router.post('/login', async (req, res) => {
     });
 
   } catch (error) {
-    console.error('Login error:', error);
+    console.error('❌ Login error:', error.message, error.stack);
     res.status(500).json({
       success: false,
-      message: 'Server error'
+      message: 'Server error: ' + error.message
     });
   }
 });
@@ -537,7 +543,26 @@ router.post('/reset-admin', async (req, res) => {
   }
 });
 
-// Initialize admin user (auto-create if doesn't exist)
+// Check if admin user exists
+router.get('/check-admin', async (req, res) => {
+  try {
+    const admin = await User.findOne({ email: 'admin@mithilamakhana.com' });
+    res.json({
+      success: true,
+      exists: !!admin,
+      email: admin ? admin.email : null,
+      isAdmin: admin ? admin.isAdmin : null
+    });
+  } catch (error) {
+    console.error('Check admin error:', error);
+    res.status(500).json({
+      success: false,
+      message: error.message
+    });
+  }
+});
+
+// Initialize/create admin user
 router.post('/init-admin', async (req, res) => {
   try {
     let admin = await User.findOne({ email: 'admin@mithilamakhana.com' });
@@ -559,6 +584,7 @@ router.post('/init-admin', async (req, res) => {
     });
     
     await admin.save();
+    console.log('✅ Admin user created');
     
     res.json({
       success: true,
@@ -569,7 +595,7 @@ router.post('/init-admin', async (req, res) => {
     console.error('Init admin error:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to initialize admin'
+      message: 'Failed to initialize admin: ' + error.message
     });
   }
 });
