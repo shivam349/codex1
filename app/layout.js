@@ -4,7 +4,6 @@ import { AuthProvider } from '@/lib/context/AuthContext';
 import { FirebaseAuthProvider } from '@/lib/context/FirebaseAuthContext';
 import { Providers } from './providers';
 import Navigation from '@/components/Navigation';
-import FirebaseHeader from '@/components/FirebaseHeader';
 
 export const metadata = {
   title: 'Mithila Makhana 3D Store - Premium Lotus Seeds',
@@ -20,7 +19,6 @@ export default function RootLayout({ children }) {
           <Providers>
             <AuthProvider>
               <CartProvider>
-                <FirebaseHeader />
                 <Navigation />
                 {children}
               </CartProvider>
