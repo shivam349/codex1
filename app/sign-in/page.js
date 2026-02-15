@@ -12,7 +12,7 @@ import { auth } from '@/lib/firebase';
 
 export default function SignInPage() {
   const router = useRouter();
-  const { user, signIn, signUp, loading: authLoading } = useAuth();
+  const { user, signIn, signUp, loading: authLoading, isEmailVerified } = useAuth();
   const [isSignUp, setIsSignUp] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -22,6 +22,8 @@ export default function SignInPage() {
   const [oauthLoading, setOauthLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState('');
+  const [showVerificationPrompt, setShowVerificationPrompt] = useState(false);
+  const [verificationEmail, setVerificationEmail] = useState('');
 
   // Check if user is already logged in
   useEffect(() => {
@@ -58,16 +60,14 @@ export default function SignInPage() {
         if (signUpError) {
           setError(signUpError);
         } else {
-          setSuccess('Account created successfully!');
+          setSuccess('Account created! A verification email has been sent to your inbox.');
+          setVerificationEmail(email);
+          setShowVerificationPrompt(true);
           // Clear form
           setEmail('');
           setPassword('');
           setConfirmPassword('');
           setName('');
-          // Redirect after a delay
-          setTimeout(() => {
-            router.push('/');
-          }, 1500);
         }
       } else {
         // Sign in with Firebase
@@ -99,6 +99,7 @@ export default function SignInPage() {
     setPassword('');
     setConfirmPassword('');
     setName('');
+    setShowVerificationPrompt(false);
   };
 
   const handleGoogleSignIn = async () => {
@@ -172,7 +173,30 @@ export default function SignInPage() {
             </div>
           )}
 
-          <div className="space-y-4">
+          {/* Email Verification Prompt */}
+          {showVerificationPrompt && (
+            <div className="mb-4 p-4 rounded-lg bg-blue-50 border border-blue-200">
+              <h3 className="font-semibold text-blue-900 mb-2">Verify Your Email</h3>
+              <p className="text-blue-700 text-sm mb-3">
+                We've sent a verification link to <strong>{verificationEmail}</strong>. 
+                Please check your inbox and click the link to verify your account.
+              </p>
+              <p className="text-blue-600 text-xs mb-3">
+                Didn't receive the email? Check your spam folder or click the button below to resend.
+              </p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={() => setShowVerificationPrompt(false)}
+                  className="flex-1 bg-blue-600 text-white py-2 px-3 rounded text-sm font-medium hover:bg-blue-700 transition-all"
+                >
+                  Back to Sign In
+                </button>
+              </div>
+            </div>
+          )}
+
+          <div className={`space-y-4 ${showVerificationPrompt ? 'hidden' : ''}`}>
             <button
               type="button"
               onClick={handleGoogleSignIn}
@@ -280,7 +304,7 @@ export default function SignInPage() {
             </button>
           </form>
 
-          {/* Toggle between sign in and sign up */}
+          {!showVerificationPrompt && (
           <div className="mt-6 text-center">
             <p className="text-sm text-gray-600">
               {isSignUp
@@ -295,13 +319,16 @@ export default function SignInPage() {
               </button>
             </p>
           </div>
+          )}
 
           {/* Back to home link */}
+          {!showVerificationPrompt && (
           <div className="mt-4 text-center">
             <Link href="/" className="text-sm text-gray-500 hover:text-gray-700">
               ← Back to Home
             </Link>
           </div>
+          )}
         </div>
       </div>
     </div>
